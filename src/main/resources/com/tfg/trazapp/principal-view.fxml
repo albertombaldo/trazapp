@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="gridPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="524.0" prefWidth="931.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tfg.trazapp.controller.PrincipalController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="26.0" minHeight="10.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <MenuBar fx:id="menuSup" GridPane.valignment="TOP">
+        <menus>
+          <Menu fx:id="proveedores" mnemonicParsing="false" text="Proveedores">
+            <items>
+                <MenuItem fx:id="listadoPoveedores" mnemonicParsing="false" onAction="#clcickOpcion" text="Buscar proveedores" />
+                <MenuItem fx:id="gestionProveedores" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión de proveedores" />
+            </items>
+          </Menu>
+          <Menu fx:id="productos" mnemonicParsing="false" text="Productos">
+            <items>
+                  <MenuItem fx:id="stock" mnemonicParsing="false" onAction="#clcickOpcion" text="Stock materiales" />
+              <MenuItem fx:id="entradasProductos" mnemonicParsing="false" onAction="#clcickOpcion" text="Entradas" />
+                  <MenuItem fx:id="gestionProductos" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión de productos" />
+            </items>
+          </Menu>
+            <Menu fx:id="produccion" mnemonicParsing="false" text="Producción">
+              <items>
+                <MenuItem fx:id="stockProducciones" mnemonicParsing="false" text="Stock producciones" />
+                  <MenuItem fx:id="nuevaProduccion" mnemonicParsing="false" text="Nueva producción" />
+                  <MenuItem fx:id="gestionProducciones" mnemonicParsing="false" text="Gestión producciones" />
+              </items>
+            </Menu>
+          <Menu fx:id="clientes" mnemonicParsing="false" text="Clientes">
+            <items>
+              <MenuItem fx:id="listadoClientes" mnemonicParsing="false" onAction="#clcickOpcion" text="Buscar clientes" />
+                  <MenuItem mnemonicParsing="false" onAction="#clcickOpcion" text="Pedidos de clientes" />
+                  <MenuItem fx:id="gestionClientes" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión de clientes" />
+            </items>
+          </Menu>
+            <Menu fx:id="usuarios" mnemonicParsing="false" text="Usuarios">
+              <items>
+                <MenuItem fx:id="gestionUsuarios" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión de usuarios" />
+              </items>
+            </Menu>
+            <Menu fx:id="btnPerfil" mnemonicParsing="false" text="Perfil">
+               <items>
+                  <MenuItem fx:id="miMisDatos" mnemonicParsing="false" text="Mis datos" />
+                  <MenuItem fx:id="miCerrarSesion" mnemonicParsing="false" onAction="#clcickOpcion" text="Cerrar sesión" />
+               </items></Menu>
+        </menus>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+      </MenuBar>
+      <ImageView fitHeight="501.0" fitWidth="849.0" opacity="0.5" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <image>
+            <Image url="@images/LOGO2_gris.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</GridPane>
