@@ -35,6 +35,8 @@ public class PrincipalController implements Initializable {
     @FXML
     Menu proveedores;
     @FXML
+    Menu recetas;
+    @FXML
     MenuItem miCerrarSesion;
     @FXML
     MenuItem gestionProveedores;
@@ -49,7 +51,11 @@ public class PrincipalController implements Initializable {
     @FXML
     MenuItem gestionClientes;
     @FXML
+    MenuItem gestionRecetas;
+    @FXML
     MenuItem listadoClientes;
+    @FXML
+    MenuItem listadoRecetas;
     @FXML
     MenuItem gestionUsuarios;
     private GridPane panelInf;
@@ -86,6 +92,10 @@ public class PrincipalController implements Initializable {
             createPageGestionClientes();
         }else if(evt.equals(listadoClientes)){
             createPageListaClientes();
+        }else if(evt.equals(listadoRecetas)){
+            createPageListaRecetas();
+        }else if(evt.equals(gestionRecetas)){
+            createPageGestionRecetas();
         }
     }
 
@@ -170,6 +180,28 @@ public class PrincipalController implements Initializable {
             setNode(panelInf);
             Stage principal = (Stage) gridPrincipal.getScene().getWindow();
             principal.setTitle("trazApp - Clientes");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createPageGestionRecetas() {
+        try {
+            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-recetas-view.fxml"));
+            setNode(panelInf);
+            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
+            principal.setTitle("trazApp - Recetas");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createPageListaRecetas() {
+        try {
+            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/lista-recetas-view.fxml"));
+            setNode(panelInf);
+            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
+            principal.setTitle("trazApp - Recetas");
         } catch (IOException e) {
             e.printStackTrace();
         }
