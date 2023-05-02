@@ -3,19 +3,19 @@ package com.tfg.trazapp.model.dto;
 import com.tfg.trazapp.model.vo.Producto;
 
 public class UtilizaDTO {
-    private String producto;
+    private Producto producto;
     private float cantidad_mp;
 
-    public UtilizaDTO(String producto, float cantidad_mp) {
+    public UtilizaDTO(Producto producto, float cantidad_mp) {
         this.producto = producto;
         this.cantidad_mp = cantidad_mp;
     }
 
-    public String getProducto() {
+    public Producto getProducto() {
         return producto;
     }
 
-    public void setProducto(String producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
 
