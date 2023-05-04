@@ -191,6 +191,7 @@ public class ProveedorDAO {
         }
         return existe;
     }
+    
     private void mostrarAlertError(ActionEvent event, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(null);
