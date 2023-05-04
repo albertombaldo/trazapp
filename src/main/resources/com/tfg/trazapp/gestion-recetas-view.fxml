@@ -57,7 +57,7 @@
             <Insets top="15.0" />
          </GridPane.margin>
       </HBox>
-      <TableView fx:id="listaEntradaProductos1" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="listaEntradaProductos1" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" onMouseClicked="#seleccionar">
          <columns>
             <TableColumn fx:id="colIdReceta" maxWidth="1000.0" minWidth="120.0" prefWidth="337.0" text="ID" />
             <TableColumn fx:id="colNombreReceta" maxWidth="1000.0" minWidth="100.0" onEditCommit="#onEditChanged" prefWidth="241.0" text="Receta" />

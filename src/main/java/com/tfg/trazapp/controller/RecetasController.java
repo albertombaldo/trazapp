@@ -71,10 +71,6 @@ public class RecetasController implements Initializable{
     private ObservableList<String> nombresProductos = obtenerNombresProductos().sorted();
     private ObservableList<UtilizaDTOComboBox> altaCantidades = FXCollections.observableArrayList();
 
-
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(this.listaRecetasListado != null){
@@ -127,13 +123,32 @@ public class RecetasController implements Initializable{
         this.listaProductosListado.setItems(consumos);
     }
 
+    public void mostrarListaEntradas(JSONArray jsonconsumos){
+        this.altaCantidades.clear();
+        for(int i = 0; i<jsonconsumos.length(); i++){
+            ComboBox prod = new ComboBox<>();
+            prod.setItems(nombresProductos);
+            JSONObject producto = (JSONObject) jsonconsumos.getJSONObject(i).get("producto");
+            prod.setPromptText(producto.get("nombre").toString());
+            String cantidad = jsonconsumos.getJSONObject(i).get("cantidad_mp").toString();
+            altaCantidades.add(new UtilizaDTOComboBox(prod, cantidad));
+        }
+        this.listaEntradaProductos.setItems(altaCantidades);
+    }
+
     public void seleccionar(MouseEvent mouseEvent) {
-        RecetaDTOSinLista rdto = this.listaRecetasListado.getSelectionModel().getSelectedItem();
-        if(rdto != null){
+        if(listaRecetasListado != null){
+            RecetaDTOSinLista rdto = this.listaRecetasListado.getSelectionModel().getSelectedItem();
             JSONArray receta = new RecetaDAO().getReceta(rdto.getId_receta());
             JSONArray materiasPrimas = (JSONArray) receta.getJSONObject(0).get("materias_primas");
             labelNombreReceta.setText(rdto.getNombre());
             mostrarListaConsumos(materiasPrimas);
+        }else{
+            RecetaDTOSinLista rdtoEntrada = this.listaEntradaProductos1.getSelectionModel().getSelectedItem();
+            JSONArray receta = new RecetaDAO().getReceta(rdtoEntrada.getId_receta());
+            JSONArray materiasPrimas = (JSONArray) receta.getJSONObject(0).get("materias_primas");
+            tfNombreReceta.setText(rdtoEntrada.getNombre());
+            mostrarListaEntradas(materiasPrimas);
         }
     }
 
@@ -168,7 +183,6 @@ public class RecetasController implements Initializable{
         ComboBox productos = new ComboBox<>();
         productos.setItems(nombresProductos);
         altaCantidades.add(new UtilizaDTOComboBox(productos, ""));
-        System.out.println(altaCantidades.toString());
         listaEntradaProductos.setItems(altaCantidades);
     }
 
