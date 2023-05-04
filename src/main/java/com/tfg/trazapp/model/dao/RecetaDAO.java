@@ -16,6 +16,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Scanner;
+import com.tfg.trazapp.model.vo.Receta;
+
 
 public class RecetaDAO {
 
@@ -56,6 +58,7 @@ public class RecetaDAO {
         return jarray;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
     public JSONArray getReceta(Long id){
         JSONArray jarray = null;
         try {
@@ -93,6 +96,7 @@ public class RecetaDAO {
         return jarray;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
     public JSONArray getRecetaPorNombre(String nombre){
         JSONArray jarray = null;
         try {
@@ -129,6 +133,51 @@ public class RecetaDAO {
     }
 
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public void anadirReceta(Receta r) {
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/receta");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            if(!comprobarRecetaExiste(r)){
+                r.setId_receta(0l);
+                String json = new JSONObject(r).toString();
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
+                conn.connect();
+                try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+                    dos.writeBytes(json);
+                }
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                }
+            } else {
+                mostrarAlertError(new ActionEvent(), "Ya existe una receta con el nombre introducido");
+            }
+            //conn.setUseCaches(false);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    public boolean comprobarRecetaExiste(Receta p){
+        boolean existe = false;
+        JSONArray recs = getAllRecetas();
+        for(int i = 0; i<recs.length(); i++){
+            if(p.getNombre().equals(recs.getJSONObject(i).get("nombre").toString()))
+                existe = true;
+        }
+        return existe;
+    }
     private void mostrarAlertError(ActionEvent event, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(null);
