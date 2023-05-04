@@ -1,6 +1,8 @@
 package com.tfg.trazapp.model.dao;
 
 import com.tfg.trazapp.model.vo.Suministro;
+import com.tfg.trazapp.model.vo.Utiliza;
+
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import org.apache.commons.lang3.StringUtils;
@@ -157,6 +159,34 @@ public class RecetaDAO {
                 }
             } else {
                 mostrarAlertError(new ActionEvent(), "Ya existe una receta con el nombre introducido");
+            }
+            //conn.setUseCaches(false);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    public void anadirUso(Utiliza u){
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/uso");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            u.setId_uso(0l);
+            String json = new JSONObject(u).toString();
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
+            conn.connect();
+            try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+                dos.writeBytes(json);
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
             }
             //conn.setUseCaches(false);
         } catch (MalformedURLException e) {

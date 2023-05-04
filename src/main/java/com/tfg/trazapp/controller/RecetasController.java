@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class RecetasController implements Initializable{
@@ -203,6 +204,15 @@ public class RecetasController implements Initializable{
                     this.listaRecetasListado.getItems().clear();
                     listaRecetasListado.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));
                 }
+            }
+        }else if(event.equals(btnGuardarReceta)){
+            //////////////////////////////
+            //GUARDAR LISTA DE PRODUCTOS//
+            //////////////////////////////
+            ArrayList<Producto> productos = new ArrayList<>();
+            Receta receta = new Receta(0l, tfNombreReceta.getText(), productos);
+            for(UtilizaDTOComboBox udtocb : listaEntradaProductos.getItems()){
+                new RecetaDAO().anadirUso(null);
             }
         }
     }
