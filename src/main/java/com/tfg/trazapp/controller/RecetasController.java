@@ -99,23 +99,23 @@ public class RecetasController implements Initializable{
 
     @FXML
     public void mostrarRecetas(JSONArray jsonrecetas){
+        this.listaEntradaProductos1.getItems().clear();
         for(int i = 0; i<jsonrecetas.length(); i++){
             Long id = Long.parseLong(jsonrecetas.getJSONObject(i).get("id_receta").toString());
             String nombre = jsonrecetas.getJSONObject(i).get("nombre").toString();
             recetas.add(new RecetaDTOSinLista(id, nombre));
         }
-        this.listaEntradaProductos1.getItems().clear();
         this.listaEntradaProductos1.setItems(recetas);
     }
 
     @FXML
     public void mostrarListaRecetas(JSONArray jsonrecetas){
+        this.listaRecetasListado.getItems().clear();
         for(int i = 0; i<jsonrecetas.length(); i++){
             Long id = Long.parseLong(jsonrecetas.getJSONObject(i).get("id_receta").toString());
             String nombre = jsonrecetas.getJSONObject(i).get("nombre").toString();
             recetas.add(new RecetaDTOSinLista(id, nombre));
         }
-        this.listaRecetasListado.getItems().clear();
         this.listaRecetasListado.setItems(recetas);
     }
 
@@ -187,7 +187,6 @@ public class RecetasController implements Initializable{
                     mostrarListaRecetas(recs);
             }else{
                 recs = new RecetaDAO().getRecetaPorNombre(tfNombreRecetaListado.getText());
-                System.out.println(recs);
                 if(recs.length() > 0){
                     mostrarListaRecetas(recs);
                 }else{
