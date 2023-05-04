@@ -39,7 +39,7 @@
                   <Insets right="20.0" top="20.0" />
                </HBox.margin>
             </Button>
-            <TextField fx:id="tfNombreReceta" prefHeight="25.0" prefWidth="179.0" promptText="Nombre">
+            <TextField fx:id="tfNombreReceta" prefHeight="25.0" prefWidth="179.0" promptText="Nombre de la receta">
                <HBox.margin>
                   <Insets top="20.0" />
                </HBox.margin>

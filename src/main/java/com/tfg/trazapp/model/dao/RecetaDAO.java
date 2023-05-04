@@ -114,9 +114,7 @@ public class RecetaDAO {
                     info.append(sc.nextLine());
                 }
                 sc.close();
-                //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
-                JSONObject jobjeto = jarray.getJSONObject(0);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");

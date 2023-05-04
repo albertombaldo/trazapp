@@ -107,7 +107,6 @@ public class ProductosController implements Initializable {
     @FXML
     private ComboBox<String> cbTipoProdFiltrar;
 
-
     private ObservableList<SuministroDTO> suministros = FXCollections.observableArrayList();
     private ObservableList<ProductoDTOComboBox> entradaProductos = FXCollections.observableArrayList();
     private ObservableList<String> nombresProductos = obtenerNombresProductos().sorted();
