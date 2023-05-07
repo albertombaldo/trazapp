@@ -44,7 +44,7 @@
                   <Insets top="20.0" />
                </HBox.margin>
             </TextField>
-            <Button fx:id="btnGuardarReceta" alignment="CENTER" mnemonicParsing="false" onAction="#clickAction" text="Guardar">
+            <Button fx:id="btnGuardarReceta" alignment="CENTER" mnemonicParsing="false" onAction="#guardarReceta" text="Guardar">
                <HBox.margin>
                   <Insets left="20.0" top="20.0" />
                </HBox.margin>
