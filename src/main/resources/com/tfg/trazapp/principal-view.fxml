@@ -36,9 +36,9 @@
           </Menu>
             <Menu fx:id="produccion" mnemonicParsing="false" text="Producción">
               <items>
-                <MenuItem fx:id="stockProducciones" mnemonicParsing="false" text="Stock producciones" />
-                  <MenuItem fx:id="nuevaProduccion" mnemonicParsing="false" text="Nueva producción" />
-                  <MenuItem fx:id="gestionProducciones" mnemonicParsing="false" text="Gestión producciones" />
+                <MenuItem fx:id="stockProducciones" mnemonicParsing="false" onAction="#clcickOpcion" text="Stock producciones" />
+                  <MenuItem fx:id="nuevaProduccion" mnemonicParsing="false" onAction="#clcickOpcion" text="Nueva producción" />
+                  <MenuItem fx:id="gestionProducciones" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión producciones" />
                   <Menu fx:id="recetas" mnemonicParsing="false" text="Recetas">
                      <items>
                         <MenuItem fx:id="listadoRecetas" mnemonicParsing="false" onAction="#clcickOpcion" text="Buscar recetas" />
@@ -61,7 +61,7 @@
             </Menu>
             <Menu fx:id="btnPerfil" mnemonicParsing="false" text="Perfil">
                <items>
-                  <MenuItem fx:id="miMisDatos" mnemonicParsing="false" text="Mis datos" />
+                  <MenuItem fx:id="miMisDatos" mnemonicParsing="false" onAction="#clcickOpcion" text="Mis datos" />
                   <MenuItem fx:id="miCerrarSesion" mnemonicParsing="false" onAction="#clcickOpcion" text="Cerrar sesión" />
                </items></Menu>
         </menus>

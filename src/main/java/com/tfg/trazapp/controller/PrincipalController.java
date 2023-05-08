@@ -58,6 +58,8 @@ public class PrincipalController implements Initializable {
     MenuItem listadoRecetas;
     @FXML
     MenuItem gestionUsuarios;
+    @FXML
+    MenuItem stockProducciones;
     private GridPane panelInf;
 
     public void setNode(Node node){
@@ -75,138 +77,43 @@ public class PrincipalController implements Initializable {
     private void clcickOpcion(ActionEvent event) throws IOException {
         Object evt = event.getSource();
         if(evt.equals(listadoPoveedores)){
-            createPageListaProveedores();
+            createPage("lista-proveedores-view.fxml", "Proveedores");
         }else if(evt.equals(gestionProveedores)){
-            createPageGestionProveedores();
+            createPage("gestion-proveedores-view.fxml", "Proveedores");
         }else if(evt.equals(stock)){
-            createPageStock();
+            createPage("stock-productos-view.fxml", "Productos");
         }else if(evt.equals(entradasProductos)){
-            createPageEntradaProductos();
-        }else if(evt.equals(miCerrarSesion)){
-            mostrarAlertConfirmacionCerrarSesion(new ActionEvent(), "¿Quiere cerrar su sesión?");
+            createPage("entrada-productos-view.fxml", "Productos");
         }else if(evt.equals(gestionProductos)){
-            createPageGestionProductos();
+            createPage("gestion-productos-view.fxml", "Productos");
         }else if(evt.equals(gestionUsuarios)){
-            createPageGestionUsuarios();
+            createPage("gestion-usuarios-view.fxml", "Usuarios");
         }else if(evt.equals(gestionClientes)){
-            createPageGestionClientes();
+            createPage("gestion-clientes-view.fxml", "Clientes");
         }else if(evt.equals(listadoClientes)){
-            createPageListaClientes();
+            createPage("lista-clientes-view.fxml", "Clientes");
         }else if(evt.equals(listadoRecetas)){
-            createPageListaRecetas();
+            createPage("lista-recetas-view.fxml", "Recetas");
         }else if(evt.equals(gestionRecetas)){
-            createPageGestionRecetas();
+            createPage("gestion-recetas-view.fxml", "Recetas");
+        }else if(evt.equals(stockProducciones)){
+            createPage("stock-producciones-view.fxml", "Producción");
+        }else if(evt.equals(miCerrarSesion)) {
+            mostrarAlertConfirmacionCerrarSesion(new ActionEvent(), "¿Quiere cerrar su sesión?");
         }
     }
 
-    public void createPageListaProveedores() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/lista-proveedores-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Proveedores");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void createPageGestionProveedores() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-proveedores-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Proveedores");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void createPageStock() {
+    public void createPage(String fxml, String encabezado) {
         try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/stock-productos-view.fxml"));
+            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/" + fxml));
             setNode(panelInf);
             Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Productos");
+            principal.setTitle("trazApp - " + encabezado);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void createPageEntradaProductos() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/entrada-productos-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Productos");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageGestionProductos() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-productos-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Productos");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageGestionUsuarios() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-usuarios-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Usuarios");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageGestionClientes() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-clientes-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Clientes");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageListaClientes() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/lista-clientes-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Clientes");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageGestionRecetas() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/gestion-recetas-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Recetas");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPageListaRecetas() {
-        try {
-            panelInf = FXMLLoader.load(getClass().getResource("/com/tfg/trazapp/lista-recetas-view.fxml"));
-            setNode(panelInf);
-            Stage principal = (Stage) gridPrincipal.getScene().getWindow();
-            principal.setTitle("trazApp - Recetas");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -122,10 +122,10 @@ public class ProductosController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(listaSuministros != null) {
             this.colIdSum.setCellValueFactory(new PropertyValueFactory("id_suministro"));
+            this.colProducto.setCellValueFactory(new PropertyValueFactory("producto"));
             this.colFechaRec.setCellValueFactory(new PropertyValueFactory("fecha_recepcion"));
             this.colFechaCad.setCellValueFactory(new PropertyValueFactory("fecha_caducidad"));
             this.colNombreProveedorSuministro.setCellValueFactory(new PropertyValueFactory("proveedor"));
-            this.colProducto.setCellValueFactory(new PropertyValueFactory("producto"));
             this.colAlbaran.setCellValueFactory(new PropertyValueFactory("albaran"));
             this.colCantidad.setCellValueFactory(new PropertyValueFactory("cantidad_recepcionada"));
             this.colStock.setCellValueFactory(new PropertyValueFactory("cantidad_stock"));
