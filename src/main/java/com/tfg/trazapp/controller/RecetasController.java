@@ -77,7 +77,6 @@ public class RecetasController implements Initializable{
             this.colNombreRecetaListado.setCellValueFactory(new PropertyValueFactory("nombre"));
             this.colNombreProductoListado.setCellValueFactory(new PropertyValueFactory("producto"));
             this.colCantidadProductoListado.setCellValueFactory(new PropertyValueFactory("cantidad_mp"));
-
             mostrarListaRecetas(new RecetaDAO().getAllRecetas());
         }else if(this.listaEntradaProductos1 != null){
             this.colIdReceta.setCellValueFactory(new PropertyValueFactory("id_receta"));
@@ -139,13 +138,11 @@ public class RecetasController implements Initializable{
     public void seleccionar(MouseEvent mouseEvent) {
         if(listaRecetasListado != null){
             Receta rdto = this.listaRecetasListado.getSelectionModel().getSelectedItem();
-            JSONArray receta = new RecetaDAO().getReceta(rdto.getId_receta());
             JSONArray materiasPrimas = new RecetaDAO().getUsos(rdto.getId_receta());
             labelNombreReceta.setText(rdto.getNombre());
             mostrarListaConsumos(materiasPrimas);
         }else{
             Receta rdtoEntrada = this.listaEntradaProductos1.getSelectionModel().getSelectedItem();
-            JSONArray receta = new RecetaDAO().getReceta(rdtoEntrada.getId_receta());
             JSONArray materiasPrimas = new RecetaDAO().getUsos(rdtoEntrada.getId_receta());
             tfNombreReceta.setText(rdtoEntrada.getNombre());
             mostrarListaEntradas(materiasPrimas);
@@ -188,11 +185,6 @@ public class RecetasController implements Initializable{
 
     @FXML
     void guardarReceta(ActionEvent event) {
-        System.out.println("Guardando receta...");
-        //////////////////////////////
-        //GUARDAR LISTA DE PRODUCTOS//
-        //////////////////////////////
-        //Modificar la lista de la receta a Utiliza
         Receta receta = new Receta(0l, tfNombreReceta.getText());
         new RecetaDAO().anadirReceta(receta);
         JSONObject recetaconId = (JSONObject) new RecetaDAO().getRecetaPorNombre(tfNombreReceta.getText()).get(0);
@@ -236,6 +228,4 @@ public class RecetasController implements Initializable{
             editado.setCantidad_mp(cellEditEvent.getNewValue());
         }
     }
-
-
 }

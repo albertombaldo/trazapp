@@ -1,14 +1,10 @@
 package com.tfg.trazapp.model.dao;
 
-import com.tfg.trazapp.model.vo.Suministro;
 import com.tfg.trazapp.model.vo.Utiliza;
-
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
