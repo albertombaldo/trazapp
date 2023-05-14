@@ -111,9 +111,11 @@ public class ProduccionesController implements Initializable {
     }
 
     public void seleccionar(MouseEvent mouseEvent) {
+
     }
 
     public void alta(ActionEvent actionEvent) {
+
     }
 
     public void enterDias(ActionEvent actionEvent) {
@@ -124,8 +126,6 @@ public class ProduccionesController implements Initializable {
             labelFechaCad.setText("");
         }
     }
-
-
 
     /**
      * Castea un JSON a un objeto de tipo ProductoFinal

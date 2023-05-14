@@ -1,8 +1,5 @@
 package com.tfg.trazapp.model.dto;
 
-import com.tfg.trazapp.model.vo.Producto;
-import com.tfg.trazapp.model.vo.Proveedor;
-
 public class SuministroDTO {
     private Long id_suministro;
     private String fecha_recepcion;

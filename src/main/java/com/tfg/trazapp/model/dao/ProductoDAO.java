@@ -41,8 +41,6 @@ public class ProductoDAO {
                 //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
                 JSONObject jobjeto = jarray.getJSONObject(0);
-                System.out.println(jobjeto.get("id_producto"));
-                System.out.println(info);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");
@@ -80,7 +78,6 @@ public class ProductoDAO {
                 }
                 sc.close();
                 //String consulta = "[" + info.toString() +"]";
-                System.out.println("INFOOOOO " + info);
                 jarray = new JSONArray(info.toString());
                 JSONObject jobjeto = jarray.getJSONObject(0);
             }
@@ -159,7 +156,6 @@ public class ProductoDAO {
                 }
                 sc.close();
                 //String consulta = "[" + info.toString() +"]";
-                System.out.println("INFOOOOO " + info);
                 jarray = new JSONArray(info.toString());
                 //JSONObject jobjeto = jarray.getJSONObject(0);
             }
