@@ -1,7 +1,6 @@
 package com.tfg.trazapp.model.dao;
 
 import com.tfg.trazapp.model.vo.Producto;
-import com.tfg.trazapp.model.vo.Proveedor;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import org.json.JSONArray;

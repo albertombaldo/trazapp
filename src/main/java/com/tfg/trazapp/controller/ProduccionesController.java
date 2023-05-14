@@ -37,7 +37,6 @@ public class ProduccionesController implements Initializable {
     void clickAction(ActionEvent event) {
 
     }
-
     @FXML
     void eliminarRegistro(ActionEvent event) {
 
