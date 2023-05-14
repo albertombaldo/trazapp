@@ -5,11 +5,15 @@ public class ProductoFinal {
     private Long id_producto_final;
     private String nombre;
     private Float peso_por_unidad;
+    private Long unidades_por_paquete;
+    private Long paquetes_por_caja;
 
-    public ProductoFinal(Long id_producto_final, String nombre, Float peso_por_unidad) {
+    public ProductoFinal(Long id_producto_final, String nombre, Float peso_por_unidad, Long unidades_por_paquete, Long paquetes_por_caja) {
         this.id_producto_final = id_producto_final;
         this.nombre = nombre;
         this.peso_por_unidad = peso_por_unidad;
+        this.unidades_por_paquete = unidades_por_paquete;
+        this.paquetes_por_caja = paquetes_por_caja;
     }
 
     public Long getId_producto_final() {
@@ -36,5 +40,19 @@ public class ProductoFinal {
         this.peso_por_unidad = peso_por_unidad;
     }
 
+    public Long getUnidades_por_paquete() {
+        return unidades_por_paquete;
+    }
 
+    public void setUnidades_por_paquete(Long unidades_por_paquete) {
+        this.unidades_por_paquete = unidades_por_paquete;
+    }
+
+    public Long getPaquetes_por_caja() {
+        return paquetes_por_caja;
+    }
+
+    public void setPaquetes_por_caja(Long paquetes_por_caja) {
+        this.paquetes_por_caja = paquetes_por_caja;
+    }
 }

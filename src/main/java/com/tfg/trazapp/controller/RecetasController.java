@@ -197,7 +197,6 @@ public class RecetasController implements Initializable{
             float cantidad = Float.parseFloat(udtocb.getCantidad_mp());
             new RecetaDAO().anadirUso(new Utiliza(0l,receta,p, cantidad));
         }
-
     }
 
     @FXML
