@@ -35,8 +35,7 @@ public class ProductoFinalDAO {
                 //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
                 JSONObject jobjeto = jarray.getJSONObject(0);
-                System.out.println(jobjeto.get("id_producto"));
-                System.out.println(info);
+
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");
