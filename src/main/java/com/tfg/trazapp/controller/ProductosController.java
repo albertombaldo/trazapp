@@ -112,7 +112,7 @@ public class ProductosController implements Initializable {
     private ObservableList<String> nombresProductos = obtenerNombresProductos().sorted();
     private ObservableList<String> nombresProveedores = obtenerNombresProveedores().sorted();
     private ObservableList<String> tiposProds = FXCollections.observableArrayList("MP", "ENV");
-    private ObservableList<String> tiposProdsFiltro = FXCollections.observableArrayList("MP", "ENV", "Todos");
+    private ObservableList<String> tiposProdsFiltro = FXCollections.observableArrayList("MP", "ENV", "CAJA", "Todos");
     private ObservableList<Producto> productos = FXCollections.observableArrayList();
 
     private Producto p;
