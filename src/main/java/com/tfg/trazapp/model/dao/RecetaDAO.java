@@ -80,7 +80,7 @@ public class RecetaDAO {
                 sc.close();
                 String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(consulta);
-                JSONObject jobjeto = jarray.getJSONObject(0);
+                //JSONObject jobjeto = jarray.getJSONObject(0);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");

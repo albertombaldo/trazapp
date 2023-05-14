@@ -6,9 +6,11 @@ import com.tfg.trazapp.model.dao.ProductoFinalDAO;
 import com.tfg.trazapp.model.dao.RecetaDAO;
 import com.tfg.trazapp.model.dto.ProductoDTOComboBox;
 import com.tfg.trazapp.model.dto.SuministroDTO;
+import com.tfg.trazapp.model.dto.UtilizaDTO;
 import com.tfg.trazapp.model.vo.Producto;
 import com.tfg.trazapp.model.vo.ProductoFinal;
 import com.tfg.trazapp.model.vo.Receta;
+import com.tfg.trazapp.model.vo.Utiliza;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,11 +21,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ProduccionesController implements Initializable {
@@ -99,6 +103,7 @@ public class ProduccionesController implements Initializable {
             this.colStock.setCellValueFactory(new PropertyValueFactory("stock"));
             this.colLote.setCellValueFactory(new PropertyValueFactory("lote_produccion"));
         }else if(listaProductos != null){
+            listaProductos.setPlaceholder(new Label(""));
             this.colLoteProducto.setCellValueFactory(new PropertyValueFactory("lote_producto"));
             this.colNombreProducto.setCellValueFactory(new PropertyValueFactory("nombre_producto"));
             this.colCantidadProducto.setCellValueFactory(new PropertyValueFactory("cantidad_producto"));
@@ -115,9 +120,24 @@ public class ProduccionesController implements Initializable {
     }
 
     public void alta(ActionEvent actionEvent) {
+        if(!camposVacios()){
 
+        }else{
+            mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
+        }
     }
-
+    //Todos los cálculos se hacen en base a que las recetas son para masas de 1000kg
+    public void enterUnidades(ActionEvent actionEvent) {
+        ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Receta r = getReceta(new RecetaDAO().getRecetaPorNombre(cbReceta.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Producto film = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getUnidades_por_paquete();
+        //Obtener materias primas que se consumen
+        ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
+        //Filtrar las ultimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
+        //Crear objetos y .add a la lista para rellenar la lista de consumos
+    }
     public void enterDias(ActionEvent actionEvent) {
         try{
             labelFechaCad.setText(LocalDate.now().plusDays(Integer.parseInt(tfDias.getText())).toString());
@@ -218,4 +238,37 @@ public class ProduccionesController implements Initializable {
         }
         return films;
     }
+
+    /**
+     * @param jsonconsumos
+     * @return Un ArrayList de UtilizaDTO
+     */
+    public ArrayList<Utiliza> obtenerConsumosReceta(JSONArray jsonconsumos){
+        ArrayList<Utiliza> consumos = new ArrayList<>();
+        for(int i = 0; i<jsonconsumos.length(); i++){
+            Long id = Long.parseLong(jsonconsumos.getJSONObject(i).get("id_uso").toString());
+            JSONObject prod = (JSONObject) jsonconsumos.getJSONObject(i).get("producto");
+            Producto producto = new Producto(Long.parseLong(prod.get("id_producto").toString()), prod.get("nombre").toString(), prod.get("tipo").toString());
+            Float cantidad = Float.parseFloat(jsonconsumos.getJSONObject(i).get("cantidad_mp").toString());
+            consumos.add(new Utiliza(id, null, producto, cantidad));
+        }
+        return consumos;
+    }
+
+    public boolean camposVacios(){
+        boolean vacios = false;
+        if(labelFechaCad.getText().equals("") || listaProductos.getItems().equals(null)){
+            vacios = true;
+        }
+        return vacios;
+    }
+
+    private void mostrarAlertError(ActionEvent event, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setTitle("Error");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
 }

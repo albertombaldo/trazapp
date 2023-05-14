@@ -44,4 +44,14 @@ public class Utiliza {
     public void setCantidad_mp(float cantidad_mp) {
         this.cantidad_mp = cantidad_mp;
     }
+
+    @Override
+    public String toString() {
+        return "Utiliza{" +
+                "id_uso=" + id_uso +
+                ", receta=" + receta +
+                ", producto=" + producto +
+                ", cantidad_mp=" + cantidad_mp +
+                '}';
+    }
 }
