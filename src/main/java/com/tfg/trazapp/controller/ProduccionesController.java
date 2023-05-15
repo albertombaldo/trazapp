@@ -131,7 +131,9 @@ public class ProduccionesController implements Initializable {
         Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getUnidades_por_paquete();
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
-        //Filtrar las ultimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
+        consumos.add(new Utiliza(null, null, caja, Float.parseFloat(tfUnidades.getText())));
+        consumos.add(new Utiliza(null, null, film, Float.parseFloat(tfUnidades.getText())));
+        //Filtrar las últimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
         for(Utiliza uso : consumos){
             Producto p = uso.getProducto();
             if(!p.getNombre().equals("Agua")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
