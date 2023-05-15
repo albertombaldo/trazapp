@@ -93,6 +93,43 @@ public class SuministroDAO {
         return jarray;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public JSONArray getUltinmosSuministrosPorFechaAsc(Long id_producto){
+        JSONArray jarray = null;
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/suministro/ultimos_suministros?id_producto=");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            //Comprobar que la peticion ha sido correcta (codigo 200)
+            int responseCode = conn.getResponseCode();
+            if(responseCode != 200) {
+                throw new RuntimeException("Ocurrió un error " + responseCode);
+            }else {
+                //Abrir un Scanner que lea el flujo de datos de la URL e imprimirlo
+                StringBuilder info = new StringBuilder();
+                //Abrimos el flujo de datos de la URL dentro del Scanner
+                Scanner sc = new Scanner(url.openStream());
+                while(sc.hasNext()) {
+                    info.append(sc.nextLine());
+                }
+                sc.close();
+                //String consulta = "[" + info.toString() +"]";
+                jarray = new JSONArray(info.toString());
+            }
+        } catch (MalformedURLException e) {
+            System.err.println("URL incorrecta");
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            System.err.println("Protocolo incorrecto");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jarray;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     public void anadirSumistro(Suministro s) {
         try {
@@ -173,6 +210,8 @@ public class SuministroDAO {
             mostrarAlertError(new ActionEvent(), "Acción no válida\nEl producto ha sido utilizado ya");
         }
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////
     public void modificarStock(Long id, Float cantidad) {
