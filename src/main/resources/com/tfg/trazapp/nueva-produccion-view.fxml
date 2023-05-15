@@ -159,8 +159,8 @@
             <TableView fx:id="listaProductos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#seleccionar" prefHeight="347.0" prefWidth="752.0">
                <columns>
                   <TableColumn fx:id="colLoteProducto" maxWidth="160.0" minWidth="180.0" prefWidth="160.0" text="Lote" />
-                  <TableColumn fx:id="colNombreProducto" maxWidth="600.0" minWidth="150.0" prefWidth="318.0" text="Producto" />
-                  <TableColumn fx:id="colCantidadProducto" maxWidth="400.0" minWidth="120.0" prefWidth="188.0" text="Cantidad(kg)" />
+                  <TableColumn fx:id="colNombreProducto" maxWidth="1.7976931348623157E308" minWidth="300.0" prefWidth="318.0" text="Producto" />
+                  <TableColumn fx:id="colCantidadProducto" maxWidth="1.7976931348623157E308" minWidth="300.0" prefWidth="239.0" text="Cantidad(kg)" />
                </columns>
                <GridPane.margin>
                   <Insets bottom="10.0" left="5.0" right="20.0" top="60.0" />
@@ -178,6 +178,9 @@
                </GridPane.margin>
             </Button>
          </children>
+         <columnConstraints>
+            <ColumnConstraints />
+         </columnConstraints>
       </GridPane>
    </children>
 </GridPane>

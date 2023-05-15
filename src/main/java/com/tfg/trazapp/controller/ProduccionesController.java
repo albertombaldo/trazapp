@@ -16,8 +16,6 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -46,8 +44,6 @@ public class ProduccionesController implements Initializable {
     private TextField tfProducto;
 
     //PANTALLA NUEVA PRODUCCION
-    @FXML
-    private Button btnAlta;
     @FXML
     private ComboBox<String> cbProducto;
     @FXML
@@ -78,7 +74,6 @@ public class ProduccionesController implements Initializable {
     private ObservableList<String> nombresCajas = obtenerNombresCajas().sorted();
     private ObservableList<ConsumeDTO> consumosProduccion = FXCollections.observableArrayList();
     private ObservableList<Suministro> suministrosTrasProduccion = FXCollections.observableArrayList();
-
 
     @FXML
     void clickAction(ActionEvent event) {
@@ -116,7 +111,10 @@ public class ProduccionesController implements Initializable {
 
     public void alta(ActionEvent actionEvent) {
         if(!camposVacios()){
-
+            //Actualizamos el stock de los suministros
+            for(Suministro s : suministrosTrasProduccion){
+                new SuministroDAO().anadirSumistro(s);
+            }
         }else{
             mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
         }
