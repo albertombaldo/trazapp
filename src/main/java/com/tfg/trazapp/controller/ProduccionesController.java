@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -136,7 +137,12 @@ public class ProduccionesController implements Initializable {
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
         //Filtrar las ultimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
+        for(Utiliza uso : consumos){
+            Producto p = uso.getProducto();
+            if(!p.getNombre().equals("Agua")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
 
+            }
+        }
         //Crear objetos y .add a la lista para rellenar la lista de consumos
     }
     public void enterDias(ActionEvent actionEvent) {
@@ -186,6 +192,27 @@ public class ProduccionesController implements Initializable {
         String tipo = jsonproductos.get("tipo").toString();
 
         return new Producto(id, nombre, tipo);
+    }
+
+    /**
+     * Castea un JSON a un objeto de tipo Producto
+     * @param jsonsuministros
+     * @return Producto
+     */
+    public Suministro getSuministro(JSONObject jsonsuministros){
+        Long id = Long.parseLong(jsonsuministros.get("id_suministro").toString());
+        Date fecha_recepcion = (Date) jsonsuministros.get("fecha_recepcion");
+        Date fecha_caducidad = (Date) jsonsuministros.get("fecha_caducidad");
+        JSONObject prod = (JSONObject) jsonsuministros.get("producto");
+        Producto producto = new Producto(Long.parseLong(prod.get("id_producto").toString()), prod.get("nombre").toString(), prod.get("tipo").toString());
+        JSONObject prov = (JSONObject) jsonsuministros.get("proveedor");
+        Proveedor proveedor = new Proveedor(Long.parseLong(prod.get("id_prodveedor").toString()), prod.get("nombre").toString(), prod.get("nif").toString(), prod.get("telefono").toString(), prod.get("direccion").toString());
+        String albaran = jsonsuministros.get("albaran").toString();
+        float cantidad_recepcionada = Float.parseFloat(jsonsuministros.get("cantidad_recepcionada").toString());
+        float cantidad_stock = Float.parseFloat(jsonsuministros.get("cantidad_stock").toString());
+        String lote_producto = jsonsuministros.get("lote_producto").toString();
+
+        return new Suministro(id, fecha_recepcion, fecha_caducidad, proveedor, producto, albaran, cantidad_recepcionada, cantidad_stock, lote_producto);
     }
 
     /**
