@@ -97,7 +97,7 @@ public class SuministroDAO {
     public JSONArray getUltinmosSuministrosPorFechaAsc(Long id_producto){
         JSONArray jarray = null;
         try {
-            URL url = new URL("http://localhost:8080/trazapp/suministro/ultimos_suministros?id_producto=");
+            URL url = new URL("http://localhost:8080/trazapp/suministro/ultimos_suministros?id_producto="+id_producto);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();

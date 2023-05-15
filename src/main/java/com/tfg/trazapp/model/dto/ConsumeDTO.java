@@ -3,12 +3,12 @@ package com.tfg.trazapp.model.dto;
 public class ConsumeDTO{
         private String lote_producto;
         private String nombre_producto;
-        private Float cantidad;
+        private Float cantidad_producto;
 
-    public ConsumeDTO(String lote_producto, String nombre_producto, Float cantidad) {
+    public ConsumeDTO(String lote_producto, String nombre_producto, Float cantidad_producto) {
         this.lote_producto = lote_producto;
         this.nombre_producto = nombre_producto;
-        this.cantidad = cantidad;
+        this.cantidad_producto = cantidad_producto;
     }
 
     public String getLote_producto() {
@@ -27,11 +27,11 @@ public class ConsumeDTO{
         this.nombre_producto = nombre_producto;
     }
 
-    public Float getCantidad() {
-        return cantidad;
+    public Float getCantidad_producto() {
+        return cantidad_producto;
     }
 
-    public void setCantidad(Float cantidad) {
-        this.cantidad = cantidad;
+    public void setCantidad_producto(Float cantidad_producto) {
+        this.cantidad_producto = cantidad_producto;
     }
 }

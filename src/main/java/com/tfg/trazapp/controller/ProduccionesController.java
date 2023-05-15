@@ -1,30 +1,23 @@
 package com.tfg.trazapp.controller;
 
-import com.tfg.trazapp.model.dao.ProduccionDAO;
-import com.tfg.trazapp.model.dao.ProductoDAO;
-import com.tfg.trazapp.model.dao.ProductoFinalDAO;
-import com.tfg.trazapp.model.dao.RecetaDAO;
+import com.tfg.trazapp.model.dao.*;
 import com.tfg.trazapp.model.dto.ConsumeDTO;
-import com.tfg.trazapp.model.dto.ProductoDTOComboBox;
-import com.tfg.trazapp.model.dto.SuministroDTO;
-import com.tfg.trazapp.model.dto.UtilizaDTO;
 import com.tfg.trazapp.model.vo.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -64,6 +57,8 @@ public class ProduccionesController implements Initializable {
     @FXML
     private ComboBox<String> cbFilm;
     @FXML
+    private TableView<ConsumeDTO> listaProductos;
+    @FXML
     private TableColumn colCantidadProducto;
     @FXML
     private TableColumn colLoteProducto;
@@ -74,8 +69,6 @@ public class ProduccionesController implements Initializable {
     @FXML
     private Label labelFechaCad;
     @FXML
-    private TableView<?> listaProductos;
-    @FXML
     private TextField tfUnidades;
     @FXML
     private TextField tfDias;
@@ -84,6 +77,7 @@ public class ProduccionesController implements Initializable {
     private ObservableList<String> nombresFilms = obtenerNombresFilms().sorted();
     private ObservableList<String> nombresCajas = obtenerNombresCajas().sorted();
     private ObservableList<ConsumeDTO> consumosProduccion = FXCollections.observableArrayList();
+    private ObservableList<Suministro> suministrosTrasProduccion = FXCollections.observableArrayList();
 
 
     @FXML
@@ -129,6 +123,9 @@ public class ProduccionesController implements Initializable {
     }
     //Todos los cálculos se hacen en base a que las recetas son para masas de 1000kg
     public void enterUnidades(ActionEvent actionEvent) {
+        suministrosTrasProduccion.clear();
+        consumosProduccion.clear();
+        boolean hayMateriasSufiientes = true;
         ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Receta r = getReceta(new RecetaDAO().getRecetaPorNombre(cbReceta.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
@@ -140,10 +137,39 @@ public class ProduccionesController implements Initializable {
         for(Utiliza uso : consumos){
             Producto p = uso.getProducto();
             if(!p.getNombre().equals("Agua")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
-
+                JSONArray suministros = new SuministroDAO().getUltinmosSuministrosPorFechaAsc(p.getId_producto());
+                Float cantidadNecesaria = (pesoMasa/1000)*uso.getCantidad_mp();
+                ArrayList<Suministro> sums = new ArrayList<>();
+                boolean cantidadSuficiente = false;
+                int cont = 0;
+                //Rellenamos el array con los suministros disponibles de la materia prima a consumir
+                for(int i = 0; i<suministros.length(); i++){
+                    Suministro s = getSuministro(suministros.getJSONObject(i));
+                    sums.add(s);
+                }
+                //Comprobamos las cantidades si son suficientes
+                while(!cantidadSuficiente && cont<sums.size()){
+                    if((sums.get(cont).getCantidad_stock() - cantidadNecesaria)>0){
+                        sums.get(cont).setCantidad_stock(sums.get(cont).getCantidad_stock() - cantidadNecesaria);
+                        suministrosTrasProduccion.add(sums.get(cont));
+                        consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), cantidadNecesaria));
+                        cantidadSuficiente = true;
+                    }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
+                        consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                        cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
+                        cont++;
+                    }
+                }
+                if(!cantidadSuficiente){
+                    mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
+                    hayMateriasSufiientes = false;
+                }
+            }else{
+                consumosProduccion.add(new ConsumeDTO(null, p.getNombre(), (pesoMasa/1000)*uso.getCantidad_mp()));
             }
         }
-        //Crear objetos y .add a la lista para rellenar la lista de consumos
+        if(hayMateriasSufiientes)
+            this.listaProductos.setItems(consumosProduccion);
     }
     public void enterDias(ActionEvent actionEvent) {
         try{
@@ -201,12 +227,12 @@ public class ProduccionesController implements Initializable {
      */
     public Suministro getSuministro(JSONObject jsonsuministros){
         Long id = Long.parseLong(jsonsuministros.get("id_suministro").toString());
-        Date fecha_recepcion = (Date) jsonsuministros.get("fecha_recepcion");
-        Date fecha_caducidad = (Date) jsonsuministros.get("fecha_caducidad");
+        Date fecha_recepcion = Date.valueOf(jsonsuministros.get("fecha_recepcion").toString());
+        Date fecha_caducidad = Date.valueOf(jsonsuministros.get("fecha_caducidad").toString());
         JSONObject prod = (JSONObject) jsonsuministros.get("producto");
         Producto producto = new Producto(Long.parseLong(prod.get("id_producto").toString()), prod.get("nombre").toString(), prod.get("tipo").toString());
         JSONObject prov = (JSONObject) jsonsuministros.get("proveedor");
-        Proveedor proveedor = new Proveedor(Long.parseLong(prod.get("id_prodveedor").toString()), prod.get("nombre").toString(), prod.get("nif").toString(), prod.get("telefono").toString(), prod.get("direccion").toString());
+        Proveedor proveedor = new Proveedor(Long.parseLong(prov.get("id_proveedor").toString()), prov.get("nombre").toString(), prov.get("nif").toString(), prov.get("telefono").toString(), prov.get("direccion").toString());
         String albaran = jsonsuministros.get("albaran").toString();
         float cantidad_recepcionada = Float.parseFloat(jsonsuministros.get("cantidad_recepcionada").toString());
         float cantidad_stock = Float.parseFloat(jsonsuministros.get("cantidad_stock").toString());
