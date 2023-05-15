@@ -4,13 +4,11 @@ import com.tfg.trazapp.model.dao.ProduccionDAO;
 import com.tfg.trazapp.model.dao.ProductoDAO;
 import com.tfg.trazapp.model.dao.ProductoFinalDAO;
 import com.tfg.trazapp.model.dao.RecetaDAO;
+import com.tfg.trazapp.model.dto.ConsumeDTO;
 import com.tfg.trazapp.model.dto.ProductoDTOComboBox;
 import com.tfg.trazapp.model.dto.SuministroDTO;
 import com.tfg.trazapp.model.dto.UtilizaDTO;
-import com.tfg.trazapp.model.vo.Producto;
-import com.tfg.trazapp.model.vo.ProductoFinal;
-import com.tfg.trazapp.model.vo.Receta;
-import com.tfg.trazapp.model.vo.Utiliza;
+import com.tfg.trazapp.model.vo.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -84,6 +82,8 @@ public class ProduccionesController implements Initializable {
     private ObservableList<String> nombresRecetas = obtenerNombresRecetas().sorted();
     private ObservableList<String> nombresFilms = obtenerNombresFilms().sorted();
     private ObservableList<String> nombresCajas = obtenerNombresCajas().sorted();
+    private ObservableList<ConsumeDTO> consumosProduccion = FXCollections.observableArrayList();
+
 
     @FXML
     void clickAction(ActionEvent event) {
@@ -136,6 +136,7 @@ public class ProduccionesController implements Initializable {
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
         //Filtrar las ultimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
+
         //Crear objetos y .add a la lista para rellenar la lista de consumos
     }
     public void enterDias(ActionEvent actionEvent) {
