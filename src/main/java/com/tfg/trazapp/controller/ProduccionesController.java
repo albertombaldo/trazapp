@@ -127,8 +127,9 @@ public class ProduccionesController implements Initializable {
         ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Receta r = getReceta(new RecetaDAO().getRecetaPorNombre(cbReceta.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
-        Producto film = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
-        Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getUnidades_por_paquete();
+        Producto film = getProducto(new ProductoDAO().getProductoPorNombre(cbFilm.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getPeso_por_unidad();
+        System.out.println(pesoMasa);
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
         consumos.add(new Utiliza(null, null, caja, Float.parseFloat(tfUnidades.getText())));
@@ -136,7 +137,7 @@ public class ProduccionesController implements Initializable {
         //Filtrar las últimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
         for(Utiliza uso : consumos){
             Producto p = uso.getProducto();
-            if(!p.getNombre().equals("Agua")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
+            if(!p.getNombre().equals("Agua") && p.getTipo().equals("MP")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
                 JSONArray suministros = new SuministroDAO().getUltinmosSuministrosPorFechaAsc(p.getId_producto());
                 Float cantidadNecesaria = (pesoMasa/1000)*uso.getCantidad_mp();
                 ArrayList<Suministro> sums = new ArrayList<>();
@@ -164,8 +165,11 @@ public class ProduccionesController implements Initializable {
                     mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
                     hayMateriasSufiientes = false;
                 }
-            }else{
+            }else if(p.getNombre().equals("Agua")){
                 consumosProduccion.add(new ConsumeDTO(null, p.getNombre(), (pesoMasa/1000)*uso.getCantidad_mp()));
+            }else{ //Sacar lote de los envases
+                consumosProduccion.add(new ConsumeDTO(null, p.getNombre(), uso.getCantidad_mp()));
+
             }
         }
         if(hayMateriasSufiientes)
@@ -228,7 +232,10 @@ public class ProduccionesController implements Initializable {
     public Suministro getSuministro(JSONObject jsonsuministros){
         Long id = Long.parseLong(jsonsuministros.get("id_suministro").toString());
         Date fecha_recepcion = Date.valueOf(jsonsuministros.get("fecha_recepcion").toString());
-        Date fecha_caducidad = Date.valueOf(jsonsuministros.get("fecha_caducidad").toString());
+        Date fecha_caducidad = null;
+        if(!jsonsuministros.get("fecha_caducidad").toString().equals("null")){
+            fecha_caducidad = Date.valueOf(jsonsuministros.get("fecha_caducidad").toString());
+        }
         JSONObject prod = (JSONObject) jsonsuministros.get("producto");
         Producto producto = new Producto(Long.parseLong(prod.get("id_producto").toString()), prod.get("nombre").toString(), prod.get("tipo").toString());
         JSONObject prov = (JSONObject) jsonsuministros.get("proveedor");
