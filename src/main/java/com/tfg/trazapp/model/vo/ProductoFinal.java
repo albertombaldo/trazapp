@@ -55,4 +55,15 @@ public class ProductoFinal {
     public void setPaquetes_por_caja(Long paquetes_por_caja) {
         this.paquetes_por_caja = paquetes_por_caja;
     }
+
+    @Override
+    public String toString() {
+        return "ProductoFinal{" +
+                "id_producto_final=" + id_producto_final +
+                ", nombre='" + nombre + '\'' +
+                ", peso_por_unidad=" + peso_por_unidad +
+                ", unidades_por_paquete=" + unidades_por_paquete +
+                ", paquetes_por_caja=" + paquetes_por_caja +
+                '}';
+    }
 }

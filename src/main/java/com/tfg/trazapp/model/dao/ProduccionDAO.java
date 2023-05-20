@@ -55,7 +55,7 @@ public class ProduccionDAO {
 
     public void anadirProduccion(Produccion p) {
         try {
-            URL url = new URL("http://localhost:8080/trazapp/suministro");
+            URL url = new URL("http://localhost:8080/trazapp/produccion");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);

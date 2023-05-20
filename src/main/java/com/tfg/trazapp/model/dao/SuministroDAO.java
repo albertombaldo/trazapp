@@ -140,8 +140,8 @@ public class SuministroDAO {
                 s.setId_suministro(0l);
                 //No admite acentos, por eso se usa el StringUtils.stripAccents
                 //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
-            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ new JSONObject(s.getCantidad_recepcionada()) +"\",\"cantidad_stock\":\""+ new JSONObject(s.getCantidad_stock()) +
-                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ new JSONObject(s.getLote_producto()) +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
+            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ s.getCantidad_recepcionada() +"\",\"cantidad_stock\":\""+ s.getCantidad_stock() +
+                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ s.getLote_producto() +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
             //String json = new JSONObject(p).toString();
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
@@ -170,8 +170,8 @@ public class SuministroDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
             conn.setDoOutput(true);
-            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ new JSONObject(s.getCantidad_recepcionada()) +"\",\"cantidad_stock\":\""+ new JSONObject(s.getCantidad_stock()) +
-                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ new JSONObject(s.getLote_producto()) +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
+            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ s.getCantidad_recepcionada() +"\",\"cantidad_stock\":\""+ s.getCantidad_stock() +
+                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ s.getLote_producto() +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
             //String json = new JSONObject(p).toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));

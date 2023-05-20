@@ -66,4 +66,16 @@ public class Produccion {
     public void setStock(Long stock) {
         this.stock = stock;
     }
+
+    @Override
+    public String toString() {
+        return "Produccion{" +
+                "lote_produccion='" + lote_produccion + '\'' +
+                ", producto_final=" + producto_final.toString() +
+                ", fecha_produccion=" + fecha_produccion +
+                ", fecha_caducidad=" + fecha_caducidad +
+                ", unidades=" + unidades +
+                ", stock=" + stock +
+                '}';
+    }
 }

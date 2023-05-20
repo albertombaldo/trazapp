@@ -17,6 +17,8 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -109,12 +111,23 @@ public class ProduccionesController implements Initializable {
 
     }
 
+    /**
+     * Actualiza el stock de los suministros y da de alta una nueva produccion
+     * @param actionEvent
+     */
     public void alta(ActionEvent actionEvent) {
         if(!camposVacios()){
             //Actualizamos el stock de los suministros
             for(Suministro s : suministrosTrasProduccion){
-                new SuministroDAO().anadirSumistro(s);
+                new SuministroDAO().modificarSuministro(s);
             }
+            //Damos de alta la produccion
+            //Como sistema de loteado emplearemos el tiempo en epoch, para saber el orden exacto de las producciones de un mismo día
+            String lote = String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(1)));
+            ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+            Long unidades = Long.parseLong(tfUnidades.getText());
+            System.out.println(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()),unidades, unidades).toString());
+            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()),unidades, unidades));
         }else{
             mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
         }
