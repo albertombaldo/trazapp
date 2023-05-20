@@ -129,7 +129,6 @@ public class ProduccionesController implements Initializable {
         Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Producto film = getProducto(new ProductoDAO().getProductoPorNombre(cbFilm.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getPeso_por_unidad();
-        System.out.println(pesoMasa);
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
         consumos.add(new Utiliza(null, null, caja, Float.parseFloat(tfUnidades.getText())));
@@ -137,39 +136,76 @@ public class ProduccionesController implements Initializable {
         //Filtrar las últimas MP de cada tipo recibidas (FIFO) y calcular si se pueden hacer los consumos
         for(Utiliza uso : consumos){
             Producto p = uso.getProducto();
-            if(!p.getNombre().equals("Agua") && p.getTipo().equals("MP")){ //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
-                JSONArray suministros = new SuministroDAO().getUltinmosSuministrosPorFechaAsc(p.getId_producto());
-                Float cantidadNecesaria = (pesoMasa/1000)*uso.getCantidad_mp();
-                ArrayList<Suministro> sums = new ArrayList<>();
-                boolean cantidadSuficiente = false;
-                int cont = 0;
-                //Rellenamos el array con los suministros disponibles de la materia prima a consumir
+            JSONArray suministros = new SuministroDAO().getUltinmosSuministrosPorFechaAsc(p.getId_producto());
+            ArrayList<Suministro> sums = new ArrayList<>();
+            int cont = 0;
+            if(p.getNombre().equals("Agua")) { //Al ser agua corriente en la BD la cantidad es 0, asi que se asume que siempre hay stock
+                consumosProduccion.add(new ConsumeDTO("00000", p.getNombre(), (pesoMasa / 1000) * uso.getCantidad_mp()));
+            }else {
+                //Rellenamos el array con los suministros disponibles de las materias primas a consumir
                 for(int i = 0; i<suministros.length(); i++){
                     Suministro s = getSuministro(suministros.getJSONObject(i));
                     sums.add(s);
                 }
-                //Comprobamos las cantidades si son suficientes
-                while(!cantidadSuficiente && cont<sums.size()){
-                    if((sums.get(cont).getCantidad_stock() - cantidadNecesaria)>0){
-                        sums.get(cont).setCantidad_stock(sums.get(cont).getCantidad_stock() - cantidadNecesaria);
-                        suministrosTrasProduccion.add(sums.get(cont));
-                        consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), cantidadNecesaria));
-                        cantidadSuficiente = true;
-                    }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
-                        consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
-                        cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
-                        cont++;
+                if(p.getTipo().equals("MP")){
+                    Float cantidadNecesaria = (pesoMasa/1000)*uso.getCantidad_mp();
+                    boolean cantidadSuficiente = false;
+                    //Comprobamos las cantidades si son suficientes
+                    while(!cantidadSuficiente && cont<sums.size()){
+                        if((sums.get(cont).getCantidad_stock() - cantidadNecesaria)>0){
+                            sums.get(cont).setCantidad_stock(sums.get(cont).getCantidad_stock() - cantidadNecesaria);
+                            suministrosTrasProduccion.add(sums.get(cont));
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), cantidadNecesaria));
+                            cantidadSuficiente = true;
+                        }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
+                            cont++;
+                        }
+                    }
+                    if(!cantidadSuficiente){
+                        mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
+                        hayMateriasSufiientes = false;
+                    }
+                }else if(p.getTipo().equals("ENV")){ //Sacar lote de los envases
+                    boolean cantidadSuficiente = false;
+                    int unidadesNecesarias = Integer.parseInt(tfUnidades.getText())*pf.getPaquetes_por_caja().intValue();
+                    while(!cantidadSuficiente && cont<sums.size()){
+                        if((sums.get(cont).getCantidad_stock() - unidadesNecesarias)>0){
+                            sums.get(cont).setCantidad_stock(sums.get(cont).getCantidad_stock() - unidadesNecesarias);
+                            suministrosTrasProduccion.add(sums.get(cont));
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), Float.parseFloat(unidadesNecesarias+"")));
+                            cantidadSuficiente = true;
+                        }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            unidadesNecesarias = unidadesNecesarias - (int) sums.get(cont).getCantidad_stock();
+                            cont++;
+                        }
+                    }
+                    if(!cantidadSuficiente){
+                        mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
+                        hayMateriasSufiientes = false;
+                    }
+                }else if(p.getTipo().equals("CAJA")){
+                    boolean cantidadSuficiente = false;
+                    int unidadesNecesarias = Integer.parseInt(tfUnidades.getText());
+                    while(!cantidadSuficiente && cont<sums.size()){
+                        if((sums.get(cont).getCantidad_stock() - unidadesNecesarias)>0){
+                            sums.get(cont).setCantidad_stock(sums.get(cont).getCantidad_stock() - unidadesNecesarias);
+                            suministrosTrasProduccion.add(sums.get(cont));
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), Float.parseFloat(unidadesNecesarias+"")));
+                            cantidadSuficiente = true;
+                        }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
+                            consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            unidadesNecesarias = unidadesNecesarias - (int) sums.get(cont).getCantidad_stock();
+                            cont++;
+                        }
+                    }
+                    if(!cantidadSuficiente){
+                        mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
+                        hayMateriasSufiientes = false;
                     }
                 }
-                if(!cantidadSuficiente){
-                    mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
-                    hayMateriasSufiientes = false;
-                }
-            }else if(p.getNombre().equals("Agua")){
-                consumosProduccion.add(new ConsumeDTO(null, p.getNombre(), (pesoMasa/1000)*uso.getCantidad_mp()));
-            }else{ //Sacar lote de los envases
-                consumosProduccion.add(new ConsumeDTO(null, p.getNombre(), uso.getCantidad_mp()));
-
             }
         }
         if(hayMateriasSufiientes)
@@ -231,7 +267,10 @@ public class ProduccionesController implements Initializable {
      */
     public Suministro getSuministro(JSONObject jsonsuministros){
         Long id = Long.parseLong(jsonsuministros.get("id_suministro").toString());
-        Date fecha_recepcion = Date.valueOf(jsonsuministros.get("fecha_recepcion").toString());
+        Date fecha_recepcion = null;
+        if(!jsonsuministros.get("fecha_recepcion").toString().equals("null")){
+            fecha_recepcion = Date.valueOf(jsonsuministros.get("fecha_recepcion").toString());
+        }
         Date fecha_caducidad = null;
         if(!jsonsuministros.get("fecha_caducidad").toString().equals("null")){
             fecha_caducidad = Date.valueOf(jsonsuministros.get("fecha_caducidad").toString());
