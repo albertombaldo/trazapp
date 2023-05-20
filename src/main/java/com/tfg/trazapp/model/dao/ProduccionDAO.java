@@ -1,8 +1,6 @@
 package com.tfg.trazapp.model.dao;
 
 import com.tfg.trazapp.model.vo.Produccion;
-import com.tfg.trazapp.model.vo.Suministro;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,9 +39,6 @@ public class ProduccionDAO {
                 sc.close();
                 //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
-                JSONObject jobjeto = jarray.getJSONObject(0);
-                System.out.println(jobjeto.get("id_producto"));
-                System.out.println(info);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");
@@ -58,4 +53,34 @@ public class ProduccionDAO {
     }
     ////////////////////////////////////////////////////////////////////////////////
 
+    public void anadirProduccion(Produccion p) {
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/suministro");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            //No admite acentos, por eso se usa el StringUtils.stripAccents
+            //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
+            String json = "{\"lote_produccion\":"+ p.getLote_produccion() +",\"fecha_caducidad\":\""+ p.getFecha_caducidad() +"\",\"fecha_produccion\":\""+ p.getFecha_produccion() +
+                    "\",\"producto_final\":\""+ new JSONObject(p.getProducto_final()) +"\",\"stock\":\""+ p.getStock() +"\", unidades\":\""+p.getUnidades()+"\" }";
+            //String json = new JSONObject(p).toString();
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
+            conn.connect();
+            try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+                dos.writeBytes(json);
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+            //conn.setUseCaches(false);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

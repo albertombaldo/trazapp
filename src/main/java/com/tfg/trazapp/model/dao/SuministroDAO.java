@@ -140,8 +140,9 @@ public class SuministroDAO {
                 s.setId_suministro(0l);
                 //No admite acentos, por eso se usa el StringUtils.stripAccents
                 //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
-                String json = StringUtils.stripAccents(new JSONObject(s).toString().replaceAll("\"id\":", "\"id_proveedor\":"));
-                //System.out.println(json);
+            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ new JSONObject(s.getCantidad_recepcionada()) +"\",\"cantidad_stock\":\""+ new JSONObject(s.getCantidad_stock()) +
+                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ new JSONObject(s.getLote_producto()) +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
+            //String json = new JSONObject(p).toString();
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
@@ -165,12 +166,12 @@ public class SuministroDAO {
     ////////////////////////////////////////////////////////////////////////////////////////////
     public void modificarSuministro(Suministro s) {
         try {
-            URL url = new URL("http://localhost:8080/trazapp/proveedor");
+            URL url = new URL("http://localhost:8080/trazapp/suministro");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
             conn.setDoOutput(true);
-            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() +
-                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
+            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ new JSONObject(s.getCantidad_recepcionada()) +"\",\"cantidad_stock\":\""+ new JSONObject(s.getCantidad_stock()) +
+                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ new JSONObject(s.getLote_producto()) +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
             //String json = new JSONObject(p).toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
