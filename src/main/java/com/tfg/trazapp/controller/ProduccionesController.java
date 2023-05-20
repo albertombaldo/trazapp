@@ -123,7 +123,7 @@ public class ProduccionesController implements Initializable {
     public void enterUnidades(ActionEvent actionEvent) {
         suministrosTrasProduccion.clear();
         consumosProduccion.clear();
-        boolean hayMateriasSufiientes = true;
+        boolean hayMateriasSuficientes = true;
         ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Receta r = getReceta(new RecetaDAO().getRecetaPorNombre(cbReceta.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
@@ -159,13 +159,15 @@ public class ProduccionesController implements Initializable {
                             cantidadSuficiente = true;
                         }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
                             consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            sums.get(cont).setCantidad_stock(0l);
+                            suministrosTrasProduccion.add(sums.get(cont));
                             cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
                             cont++;
                         }
                     }
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
-                        hayMateriasSufiientes = false;
+                        hayMateriasSuficientes = false;
                     }
                 }else if(p.getTipo().equals("ENV")){ //Sacar lote de los envases
                     boolean cantidadSuficiente = false;
@@ -178,13 +180,15 @@ public class ProduccionesController implements Initializable {
                             cantidadSuficiente = true;
                         }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
                             consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            sums.get(cont).setCantidad_stock(0l);
+                            suministrosTrasProduccion.add(sums.get(cont));
                             unidadesNecesarias = unidadesNecesarias - (int) sums.get(cont).getCantidad_stock();
                             cont++;
                         }
                     }
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
-                        hayMateriasSufiientes = false;
+                        hayMateriasSuficientes = false;
                     }
                 }else if(p.getTipo().equals("CAJA")){
                     boolean cantidadSuficiente = false;
@@ -197,20 +201,27 @@ public class ProduccionesController implements Initializable {
                             cantidadSuficiente = true;
                         }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
                             consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            sums.get(cont).setCantidad_stock(0l);
+                            suministrosTrasProduccion.add(sums.get(cont));
                             unidadesNecesarias = unidadesNecesarias - (int) sums.get(cont).getCantidad_stock();
                             cont++;
                         }
                     }
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
-                        hayMateriasSufiientes = false;
+                        hayMateriasSuficientes = false;
                     }
                 }
             }
         }
-        if(hayMateriasSufiientes)
+        if(hayMateriasSuficientes)
             this.listaProductos.setItems(consumosProduccion);
     }
+
+    /**
+     * Setea la fecha de caducidad en base a los días introducidos
+     * @param actionEvent
+     */
     public void enterDias(ActionEvent actionEvent) {
         try{
             labelFechaCad.setText(LocalDate.now().plusDays(Integer.parseInt(tfDias.getText())).toString());
