@@ -126,8 +126,13 @@ public class ProduccionesController implements Initializable {
             String lote = String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(1)));
             ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
             Long unidades = Long.parseLong(tfUnidades.getText());
-            System.out.println(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()),unidades, unidades).toString());
-            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()),unidades, unidades));
+            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()), unidades , unidades));
+
+            consumosProduccion.clear();
+            this.listaProductos.setItems(consumosProduccion);
+            tfUnidades.setText("");
+            tfDias.setText("");
+            labelFechaCad.setText("");
         }else{
             mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
         }

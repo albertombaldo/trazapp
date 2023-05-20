@@ -62,7 +62,7 @@ public class ProduccionDAO {
             //No admite acentos, por eso se usa el StringUtils.stripAccents
             //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
             String json = "{\"lote_produccion\":"+ p.getLote_produccion() +",\"fecha_caducidad\":\""+ p.getFecha_caducidad() +"\",\"fecha_produccion\":\""+ p.getFecha_produccion() +
-                    "\",\"producto_final\":\""+ new JSONObject(p.getProducto_final()) +"\",\"stock\":\""+ p.getStock() +"\", unidades\":\""+p.getUnidades()+"\" }";
+                    "\",\"producto_final\":"+ new JSONObject(p.getProducto_final()) +",\"stock\":\""+ p.getStock() +"\",\" unidades\":\""+p.getUnidades()+"\" }";
             //String json = new JSONObject(p).toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
