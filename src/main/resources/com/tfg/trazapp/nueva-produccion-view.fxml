@@ -38,7 +38,7 @@
             </Label>
          </children>
       </HBox>
-      <GridPane fx:id="gpCampos">
+      <GridPane fx:id="gpCampos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -47,11 +47,11 @@
           <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="83.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <VBox fx:id="vbInfo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="340.0" prefWidth="562.0">
+            <VBox fx:id="vbInfo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="513.0" prefWidth="562.0">
                <children>
                   <Label text="Receta">
                      <VBox.margin>
-                        <Insets bottom="10.0" left="20.0" right="20.0" top="170.0" />
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="40.0" />
                      </VBox.margin>
                   </Label>
                   <ComboBox fx:id="cbReceta" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Seleccione la receta">
@@ -144,13 +144,13 @@
                      </VBox.margin>
                   </HBox>
                </children>
-               <padding>
-                  <Insets bottom="100.0" />
-               </padding>
+               <GridPane.margin>
+                  <Insets top="90.0" />
+               </GridPane.margin>
             </VBox>
          </children>
       </GridPane>
-      <GridPane GridPane.columnIndex="1">
+      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1">
         <rowConstraints>
           <RowConstraints maxHeight="440.0" minHeight="10.0" prefHeight="440.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
