@@ -139,7 +139,6 @@ public class SuministroDAO {
             conn.setDoOutput(true);
                 s.setId_suministro(0l);
                 //No admite acentos, por eso se usa el StringUtils.stripAccents
-                //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
             String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ s.getCantidad_recepcionada() +"\",\"cantidad_stock\":\""+ s.getCantidad_stock() +
                     "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ s.getLote_producto() +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
             //String json = new JSONObject(p).toString();
@@ -221,28 +220,7 @@ public class SuministroDAO {
         }
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////
-    public void modificarStock(Long id, Float cantidad) {
-        try {
-            URL url = new URL("http://localhost:8080/trazapp/suministro/modificar_stock?id=" + id + "&cantidad=" + cantidad);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("PUT");
-            conn.connect();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
-                String line;
-                while ((line = br.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            mostrarAlertError(new ActionEvent(), "Acción no válida\nEl producto no tiene stock suficiente");
-        }
-    }
-
     private void mostrarAlertError(ActionEvent event, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(null);
