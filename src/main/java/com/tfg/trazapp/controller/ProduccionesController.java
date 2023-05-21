@@ -175,9 +175,9 @@ public class ProduccionesController implements Initializable {
                             cantidadSuficiente = true;
                         }else{ //Si no hay suficiente MP, se toma parte del lote siguiente para completar la produccion, por lo que se actualiza cantidadNecesaria para comprobar si el siguiente lote tiene stock
                             consumosProduccion.add(new ConsumeDTO(sums.get(cont).getLote_producto(), p.getNombre(), sums.get(cont).getCantidad_stock()));
+                            cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
                             sums.get(cont).setCantidad_stock(0l);
                             suministrosTrasProduccion.add(sums.get(cont));
-                            cantidadNecesaria = cantidadNecesaria - sums.get(cont).getCantidad_stock();
                             cont++;
                         }
                     }
