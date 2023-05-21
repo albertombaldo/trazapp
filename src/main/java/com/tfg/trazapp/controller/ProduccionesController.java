@@ -2,6 +2,7 @@ package com.tfg.trazapp.controller;
 
 import com.tfg.trazapp.model.dao.*;
 import com.tfg.trazapp.model.dto.ConsumeDTO;
+import com.tfg.trazapp.model.dto.ProduccionDTO;
 import com.tfg.trazapp.model.vo.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,9 +43,9 @@ public class ProduccionesController implements Initializable {
     @FXML
     private TableColumn colStock;
     @FXML
-    private TableView<?> listaProducciones;
+    private TableView<ProduccionDTO> listaProducciones;
     @FXML
-    private TextField tfProducto;
+    private ComboBox<String> cbFiltroProducciones;
 
     //PANTALLA NUEVA PRODUCCION
     @FXML
@@ -77,6 +78,8 @@ public class ProduccionesController implements Initializable {
     private ObservableList<String> nombresCajas = obtenerNombresCajas().sorted();
     private ObservableList<ConsumeDTO> consumosProduccion = FXCollections.observableArrayList();
     private ObservableList<Suministro> suministrosTrasProduccion = FXCollections.observableArrayList();
+    private ObservableList<ProduccionDTO> producciones = FXCollections.observableArrayList();
+
 
     @FXML
     void clickAction(ActionEvent event) {
@@ -89,12 +92,14 @@ public class ProduccionesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(this.listaProducciones != null){
-            this.colProducto.setCellValueFactory(new PropertyValueFactory("nombre"));
+            this.colProducto.setCellValueFactory(new PropertyValueFactory("producto_final"));
             this.colFechaProduccion.setCellValueFactory(new PropertyValueFactory("fecha_produccion"));
             this.colFechaCad.setCellValueFactory(new PropertyValueFactory("fecha_caducidad"));
             this.colCantidad.setCellValueFactory(new PropertyValueFactory("unidades"));
             this.colStock.setCellValueFactory(new PropertyValueFactory("stock"));
             this.colLote.setCellValueFactory(new PropertyValueFactory("lote_produccion"));
+            cbFiltroProducciones.setItems(nombresProductos);
+            mostrarListaProducciones(new ProduccionDAO().getAllProducciones());
         }else if(listaProductos != null){
             listaProductos.setPlaceholder(new Label(""));
             this.colLoteProducto.setCellValueFactory(new PropertyValueFactory("lote_producto"));
@@ -242,6 +247,20 @@ public class ProduccionesController implements Initializable {
         }
         if(hayMateriasSuficientes)
             this.listaProductos.setItems(consumosProduccion);
+    }
+
+    public void mostrarListaProducciones(JSONArray jsonprod){
+        this.listaProducciones.getItems().clear();
+        for(int i = 0; i<jsonprod.length(); i++){
+            String id = jsonprod.getJSONObject(i).get("lote_produccion").toString();
+            JSONObject pf = jsonprod.getJSONObject(i).getJSONObject("producto_final");
+            String fp = jsonprod.getJSONObject(i).get("fecha_produccion").toString();
+            String fc = jsonprod.getJSONObject(i).get("fecha_caducidad").toString();
+            Long uds = Long.parseLong(jsonprod.getJSONObject(i).get("unidades").toString());
+            Long stock = Long.parseLong(jsonprod.getJSONObject(i).get("stock").toString());
+            producciones.add(new ProduccionDTO(id, pf.getString("nombre"), fp, fc, uds, stock));
+        }
+        this.listaProducciones.setItems(producciones);
     }
 
     /**
