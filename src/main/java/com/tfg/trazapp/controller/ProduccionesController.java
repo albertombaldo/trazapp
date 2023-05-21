@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -126,13 +127,10 @@ public class ProduccionesController implements Initializable {
             String lote = String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(1)));
             ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
             Long unidades = Long.parseLong(tfUnidades.getText());
-            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()), unidades , unidades));
+            Long stock = Long.parseLong(tfUnidades.getText());
+            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()), unidades , stock));
 
-            consumosProduccion.clear();
-            this.listaProductos.setItems(consumosProduccion);
-            tfUnidades.setText("");
-            tfDias.setText("");
-            labelFechaCad.setText("");
+            resetCampos();
         }else{
             mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
         }
@@ -144,8 +142,8 @@ public class ProduccionesController implements Initializable {
         boolean hayMateriasSuficientes = true;
         ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
         Receta r = getReceta(new RecetaDAO().getRecetaPorNombre(cbReceta.getValue().replaceAll(" ", "%20")).getJSONObject(0));
-        Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(cbCaja.getValue().replaceAll(" ", "%20")).getJSONObject(0));
-        Producto film = getProducto(new ProductoDAO().getProductoPorNombre(cbFilm.getValue().replaceAll(" ", "%20")).getJSONObject(0));
+        Producto caja = getProducto(new ProductoDAO().getProductoPorNombre(StringUtils.stripAccents(cbCaja.getValue().replaceAll(" ", "%20"))).getJSONObject(0));
+        Producto film = getProducto(new ProductoDAO().getProductoPorNombre(StringUtils.stripAccents(cbFilm.getValue().replaceAll(" ", "%20"))).getJSONObject(0));
         Float pesoMasa = Float.parseFloat(tfUnidades.getText())*pf.getPaquetes_por_caja()*pf.getUnidades_por_paquete()*pf.getPeso_por_unidad();
         //Obtener materias primas que se consumen
         ArrayList<Utiliza> consumos = obtenerConsumosReceta(new RecetaDAO().getUsos(r.getId_receta()));
@@ -186,6 +184,7 @@ public class ProduccionesController implements Initializable {
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
                         hayMateriasSuficientes = false;
+                        resetCampos();
                     }
                 }else if(p.getTipo().equals("ENV")){ //Sacar lote de los envases
                     boolean cantidadSuficiente = false;
@@ -207,6 +206,7 @@ public class ProduccionesController implements Initializable {
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
                         hayMateriasSuficientes = false;
+                        resetCampos();
                     }
                 }else if(p.getTipo().equals("CAJA")){
                     boolean cantidadSuficiente = false;
@@ -228,6 +228,7 @@ public class ProduccionesController implements Initializable {
                     if(!cantidadSuficiente){
                         mostrarAlertError(new ActionEvent(), "No hay suficiente " + p.getNombre() + " para completar la producción");
                         hayMateriasSuficientes = false;
+                        resetCampos();
                     }
                 }
             }
@@ -382,6 +383,14 @@ public class ProduccionesController implements Initializable {
             consumos.add(new Utiliza(id, null, producto, cantidad));
         }
         return consumos;
+    }
+
+    public void resetCampos(){
+        consumosProduccion.clear();
+        this.listaProductos.setItems(consumosProduccion);
+        tfUnidades.setText("");
+        tfDias.setText("");
+        labelFechaCad.setText("");
     }
 
     public boolean camposVacios(){
