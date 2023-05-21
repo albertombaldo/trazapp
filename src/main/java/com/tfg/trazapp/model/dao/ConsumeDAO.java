@@ -26,9 +26,10 @@ public class ConsumeDAO {
             String json = StringUtils.stripAccents(new JSONObject()
                     .put("id_consumo", c.getId_consumo())
                     .put("cantidad",  c.getCantidad())
-                    .put("lote_produccion", new JSONObject(c.getProduccion()))
-                    .put("id_suministro", new JSONObject(c.getSuministro()))
+                    .put("produccion", new JSONObject(c.getProduccion()))
+                    .put("suministro", new JSONObject(c.getSuministro()))
                     .toString());
+            System.out.println(json);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();

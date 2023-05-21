@@ -118,17 +118,24 @@ public class ProduccionesController implements Initializable {
      */
     public void alta(ActionEvent actionEvent) {
         if(!camposVacios()){
-            //Actualizamos el stock de los suministros
-            for(Suministro s : suministrosTrasProduccion){
-                new SuministroDAO().modificarSuministro(s);
-            }
-            //Damos de alta la produccion
             //Como sistema de loteado emplearemos el tiempo en epoch, para saber el orden exacto de las producciones de un mismo día
             String lote = String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(1)));
             ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(cbProducto.getValue().replaceAll(" ", "%20")).getJSONObject(0));
-            Long unidades = Long.parseLong(tfUnidades.getText());
-            Long stock = Long.parseLong(tfUnidades.getText());
-            new ProduccionDAO().anadirProduccion(new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()), unidades , stock));
+            Produccion p = new Produccion(lote, pf, Date.valueOf(labelFechaProd.getText()), Date.valueOf(labelFechaCad.getText()), Long.parseLong(tfUnidades.getText()) , Long.parseLong(tfUnidades.getText()));
+
+            //Actualizamos el stock de los suministros y damos de alta los consumos en la BD
+            for(Suministro s : suministrosTrasProduccion){
+                new SuministroDAO().modificarSuministro(s);
+                for(ConsumeDTO cdto : consumosProduccion){
+                    if (cdto.getLote_producto().equals(s.getLote_producto())){
+                        Consume c = new Consume(null, p, s, cdto.getCantidad_producto());
+                        new ConsumeDAO().anadirConsumo(c);
+                    }
+                }
+            }
+
+            //Damos de alta la produccion
+            new ProduccionDAO().anadirProduccion(p);
 
             resetCampos();
         }else{
