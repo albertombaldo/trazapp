@@ -95,7 +95,17 @@ public class ProduccionesController implements Initializable {
     }
     @FXML
     void eliminarRegistro(ActionEvent event) {
-
+        if(this.listaProducciones.getSelectionModel().getSelectedItem() != null){
+            Long stock = listaProducciones.getSelectionModel().getSelectedItem().getStock();
+            Long udsProducidas = listaProducciones.getSelectionModel().getSelectedItem().getUnidades();
+            if(stock != udsProducidas){
+                mostrarAlertError(new ActionEvent(),"El registro no puede eliminarse ya que ha sido enviado a cliente");
+            }else{
+                //Reponer el stock de los suministros
+                //Eliminar los consumos
+                //Eliminar la produccion
+            }
+        }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

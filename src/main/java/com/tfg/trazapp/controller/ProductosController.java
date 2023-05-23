@@ -434,14 +434,16 @@ public class ProductosController implements Initializable {
     public void eliminarRegistro(ActionEvent actionEvent) {
         //Comprobamos si el stock restante es igual que el de entrada para ver que no se ha utilizado en producciones
         //Si es agua no se deja eliminar
-        Float cantRep = listaSuministros.getSelectionModel().getSelectedItem().getCantidad_recepcionada();
-        Float cantStock = listaSuministros.getSelectionModel().getSelectedItem().getCantidad_stock();
-        if(cantStock.equals(cantRep) && !listaSuministros.getSelectionModel().getSelectedItem().getProducto().equals("Agua")){
-            sumdao.deleteSuministro(listaSuministros.getSelectionModel().getSelectedItem().getId_suministro());
-            listaSuministros.getItems().remove(listaSuministros.getSelectionModel().getSelectedItem());
-            listaSuministros.refresh();
-        }else{
-            mostrarMensajeError(new ActionEvent(), "El suministro no puede eliminarse ya que ha sido empleado en producción");
+        if (listaSuministros.getSelectionModel().getSelectedItem() != null) {
+            Float cantRep = listaSuministros.getSelectionModel().getSelectedItem().getCantidad_recepcionada();
+            Float cantStock = listaSuministros.getSelectionModel().getSelectedItem().getCantidad_stock();
+            if(cantStock.equals(cantRep) && !listaSuministros.getSelectionModel().getSelectedItem().getProducto().equals("Agua")){
+                sumdao.deleteSuministro(listaSuministros.getSelectionModel().getSelectedItem().getId_suministro());
+                listaSuministros.getItems().remove(listaSuministros.getSelectionModel().getSelectedItem());
+                listaSuministros.refresh();
+            }else{
+                mostrarMensajeError(new ActionEvent(), "El suministro no puede eliminarse ya que ha sido empleado en producción");
+            }
         }
     }
 
