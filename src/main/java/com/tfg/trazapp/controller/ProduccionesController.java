@@ -83,7 +83,15 @@ public class ProduccionesController implements Initializable {
 
     @FXML
     void clickAction(ActionEvent event) {
-
+        if(event.getSource().equals(btnFiltrar)){
+            JSONObject prod = new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(cbFiltroProducciones.getValue()).replaceAll(" ", "%20")).getJSONObject(0);
+            if(prod.length()>0){
+                mostrarListaProducciones(new ProduccionDAO().getProduccionesPorProducto(prod.get("id_producto_final").toString()));
+            }else{
+                this.listaProducciones.getItems().clear();
+                this.listaProducciones.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));
+            }
+        }
     }
     @FXML
     void eliminarRegistro(ActionEvent event) {
