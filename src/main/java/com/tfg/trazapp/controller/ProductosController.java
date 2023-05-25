@@ -55,10 +55,6 @@ public class ProductosController implements Initializable {
     @FXML
     private TableColumn colStock;
     @FXML
-    private GridPane gpLista;
-    @FXML
-    private HBox hboxFiltro;
-    @FXML
     private TextField tfAlbaran;
 
     //VENTANA ENTRADAS
@@ -76,10 +72,6 @@ public class ProductosController implements Initializable {
     private TableColumn colProductoEnt;
     @FXML
     private DatePicker dpFechaEnt;
-    @FXML
-    private GridPane gpListaEnt;
-    @FXML
-    private HBox hboxEnt;
     @FXML
     private TableView<ProductoDTOComboBox> listaEntradaProductos;
     @FXML

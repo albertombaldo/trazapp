@@ -139,9 +139,17 @@ public class SuministroDAO {
             conn.setDoOutput(true);
                 s.setId_suministro(0l);
                 //No admite acentos, por eso se usa el StringUtils.stripAccents
-            String json = "{\"id_suministro\":"+ s.getId_suministro() +",\"fecha_recepcion\":\""+ s.getFecha_recepcion() +"\",\"fecha_caducidad\":\""+ s.getFecha_caducidad() + "\",\"cantidad_recepcionada\":\""+ s.getCantidad_recepcionada() +"\",\"cantidad_stock\":\""+ s.getCantidad_stock() +
-                    "\",\"proveedor\":\""+ new JSONObject(s.getProveedor()) +"\",\"lote_producto\":\""+ s.getLote_producto() +"\", albaran\":\""+s.getAlbaran()+"\",\"producto\":\""+ new JSONObject(s.getProducto()) +"\" }";
-            //String json = new JSONObject(p).toString();
+                String json = new JSONObject()
+                    .put("id_suministro", s.getId_suministro())
+                    .put("fecha_recepcion", s.getFecha_recepcion())
+                    .put("fecha_caducidad", s.getFecha_caducidad())
+                    .put("cantidad_recepcionada", s.getCantidad_recepcionada())
+                    .put("cantidad_stock", s.getCantidad_stock())
+                    .put("proveedor", new JSONObject(s.getProveedor()))
+                    .put("lote_producto", s.getLote_producto())
+                    .put("albaran", s.getAlbaran())
+                    .put("producto", new JSONObject(s.getProducto()))
+                    .toString();
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
