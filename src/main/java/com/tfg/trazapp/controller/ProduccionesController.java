@@ -93,6 +93,8 @@ public class ProduccionesController implements Initializable {
             }
         }
     }
+
+    //Repasar metodo y poner el boton en visible btnEliminarRegistro.setVisible(true);
     @FXML
     void eliminarRegistro(ActionEvent event) {
         if(this.listaProducciones.getSelectionModel().getSelectedItem() != null){
@@ -101,15 +103,25 @@ public class ProduccionesController implements Initializable {
             if(stock != udsProducidas){
                 mostrarAlertError(new ActionEvent(),"El registro no puede eliminarse ya que ha sido enviado a cliente");
             }else{
-                //Reponer el stock de los suministros
-                //Eliminar los consumos
+                String lote = listaProducciones.getSelectionModel().getSelectedItem().getLote_produccion();
+                JSONArray consumos = new ConsumeDAO().getConsumosPorLoteProd(lote);
+                for(int i = 0; i<consumos.length(); i++){
+                    //Reponer el stock de los suministros
+                    Suministro s = getSuministro(consumos.getJSONObject(0).getJSONObject("suministro"));
+                    s.setCantidad_stock(s.getCantidad_stock() + consumos.getJSONObject(0).getFloat("cantidad"));
+                    new SuministroDAO().modificarSuministro(s);
+                    //Eliminar los consumos
+                    new ConsumeDAO().deleteConsumo(consumos.getJSONObject(i).getLong("id_consumo"));
+                }
                 //Eliminar la produccion
+                new ProduccionDAO().deleteProduccion(lote);
             }
         }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(this.listaProducciones != null){
+            btnEliminarRegistro.setVisible(false);
             this.colProducto.setCellValueFactory(new PropertyValueFactory("producto_final"));
             this.colFechaProduccion.setCellValueFactory(new PropertyValueFactory("fecha_produccion"));
             this.colFechaCad.setCellValueFactory(new PropertyValueFactory("fecha_caducidad"));

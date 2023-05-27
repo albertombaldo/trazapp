@@ -1,6 +1,8 @@
 package com.tfg.trazapp.model.dao;
 
 import com.tfg.trazapp.model.vo.Produccion;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,21 +62,16 @@ public class ProduccionDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
-
-            //Comprobar que la peticion ha sido correcta (codigo 200)
             int responseCode = conn.getResponseCode();
             if(responseCode != 200) {
                 throw new RuntimeException("Ocurrió un error " + responseCode);
             }else {
-                //Abrir un Scanner que lea el flujo de datos de la URL e imprimirlo
                 StringBuilder info = new StringBuilder();
-                //Abrimos el flujo de datos de la URL dentro del Scanner
                 Scanner sc = new Scanner(url.openStream());
                 while(sc.hasNext()) {
                     info.append(sc.nextLine());
                 }
                 sc.close();
-                //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
             }
         } catch (MalformedURLException e) {
@@ -96,8 +93,6 @@ public class ProduccionDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            //No admite acentos, por eso se usa el StringUtils.stripAccents
-            //Cuando pasa a JSON el proveedor cambia id_proveedor por id sin motivo, por lo que se sustituye usando .replaceAll("\"id\":", "\"id_proveedor\":")
             String json = new JSONObject()
                     .put("lote_produccion", p.getLote_produccion())
                     .put("fecha_caducidad",  p.getFecha_caducidad())
@@ -106,9 +101,6 @@ public class ProduccionDAO {
                     .put("stock", p.getStock())
                     .put("unidades", p.getUnidades())
                     .toString();
-            //String json = "{\"lote_produccion\":"+ p.getLote_produccion() +",\"fecha_caducidad\":\""+ p.getFecha_caducidad() +"\",\"fecha_produccion\":\""+ p.getFecha_produccion() +
-            //       "\",\"producto_final\":"+ new JSONObject(p.getProducto_final()) +",\"stock\":"+ p.getStock() +",\"unidades\":"+p.getUnidades()+"}";
-            //String json = new JSONObject(p).toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
@@ -121,11 +113,39 @@ public class ProduccionDAO {
                     System.out.println(line);
                 }
             }
-            //conn.setUseCaches(false);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    public void deleteProduccion(String lote) {
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/produccion?id=" + lote);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+            conn.connect();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            mostrarAlertError(new ActionEvent(), "El registro no puede eliminarse ya que ha sido enviado a cliente");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    private void mostrarAlertError(ActionEvent event, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setTitle("Error");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }
