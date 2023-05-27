@@ -1,6 +1,7 @@
 package com.tfg.trazapp.model.dao;
 
 import com.tfg.trazapp.model.vo.Suministro;
+import com.tfg.trazapp.model.vo.Usuario;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.*;
 import java.util.Scanner;
 
 public class SuministroDAO {
@@ -163,7 +165,7 @@ public class SuministroDAO {
     ////////////////////////////////////////////////////////////////////////////////////////////
     public void modificarSuministro(Suministro s) {
         try {
-            URL url = new URL("http://localhost:8080/trazapp/suministro");
+            URL url = new URL("http://localhost:8080/trazapp/suministro/modificar_stock");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
             conn.setDoOutput(true);
@@ -177,8 +179,7 @@ public class SuministroDAO {
                     .put("lote_producto", s.getLote_producto())
                     .put("producto", new JSONObject(s.getProducto()))
                     .put("albaran", s.getAlbaran())
-                    .toString());
-            System.out.println(json);
+                    .toString().replaceAll("\"id\":", "\"id_proveedor\":"));
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();

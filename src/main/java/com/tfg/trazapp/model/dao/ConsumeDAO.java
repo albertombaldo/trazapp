@@ -23,13 +23,13 @@ public class ConsumeDAO {
             conn.setDoOutput(true);
             c.setId_consumo(0l);
             //No admite acentos, por eso se usa el StringUtils.stripAccents
+            //Se emplea .replaceAll("\"id\":", "\"id_proveedor\":") ya que setea la palabra a "id" sin razón aparente
             String json = StringUtils.stripAccents(new JSONObject()
                     .put("id_consumo", c.getId_consumo())
                     .put("cantidad",  c.getCantidad())
                     .put("produccion", new JSONObject(c.getProduccion()))
                     .put("suministro", new JSONObject(c.getSuministro()))
-                    .toString());
-            System.out.println(json);
+                    .toString().replaceAll("\"id\":", "\"id_proveedor\":"));
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
