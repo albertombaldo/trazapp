@@ -46,4 +46,35 @@ public class EnvioDAO {
         }
         return jarray;
     }
+    ///////////////////////////////////////////////////////////////
+    public JSONArray getEnviosPorAlbaran(String albaran){
+        JSONArray jarray = null;
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/envio/albaran/" + albaran);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+            if(responseCode != 200) {
+                throw new RuntimeException("Ocurrió un error " + responseCode);
+            }else {
+                StringBuilder info = new StringBuilder();
+                Scanner sc = new Scanner(url.openStream());
+                while(sc.hasNext()) {
+                    info.append(sc.nextLine());
+                }
+                sc.close();
+                jarray = new JSONArray(info.toString());
+            }
+        } catch (MalformedURLException e) {
+            System.err.println("URL incorrecta");
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            System.err.println("Protocolo incorrecto");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jarray;
+    }
 }
