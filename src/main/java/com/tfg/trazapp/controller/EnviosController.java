@@ -146,11 +146,11 @@ public class EnviosController implements Initializable {
                 Envio e = new Envio(0l, pf, c, fechaActual, Float.parseFloat(edtoc.getCantidad_producto().toString()), edtoc.getLote_producto().toString(), labelNumAlbaran.getText());
                 new EnvioDAO().anadirEnvio(e);
             }
-            /*
-             * Obtener las producciones de la lista
-             * Ajustar los stocks
-             * Generar el envio dando de alta cada linea
-             */
+            listaProductos.getItems().clear();
+            cajasPedido.clear();
+            tfUnidades.setText("");
+            labelNumAlbaran.setText(String.valueOf(LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(1))));
+
         }else{
             mostrarAlertError(new ActionEvent(), "Debe añadir productos s la lista");
         }
