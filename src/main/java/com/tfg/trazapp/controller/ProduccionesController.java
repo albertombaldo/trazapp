@@ -185,7 +185,13 @@ public class ProduccionesController implements Initializable {
     }
 
     public void seleccionar(MouseEvent mouseEvent) {
-
+        if (listaProductosFinales != null){
+            ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinal(listaProductosFinales.getSelectionModel().getSelectedItem().getId_producto_final()).getJSONObject(0));
+            tfNombreProd.setText(pf.getNombre());
+            tfPesoUni.setText(pf.getPeso_por_unidad().toString());
+            tfUdsPaq.setText(pf.getUnidades_por_paquete().toString());
+            tfPaqsCaja.setText(pf.getPaquetes_por_caja().toString());
+        }
     }
 
     /**

@@ -156,7 +156,7 @@
           <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TableView fx:id="listaProductos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#seleccionar" prefHeight="347.0" prefWidth="752.0">
+            <TableView fx:id="listaProductos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="347.0" prefWidth="752.0">
                <columns>
                   <TableColumn fx:id="colLoteProducto" maxWidth="160.0" minWidth="180.0" prefWidth="160.0" text="Lote" />
                   <TableColumn fx:id="colNombreProducto" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="318.0" text="Producto" />
