@@ -57,9 +57,9 @@ public class EnviosController implements Initializable {
     @FXML
     void clickAction(ActionEvent event) {
         if(event.getSource().equals(btnFiltrar)){
-            JSONArray envios = new EnvioDAO().getEnviosPorAlbaran(tfAlbaranEnvio.getText());
-            if(envios.length()>0){
-                mostrarListaEnvios(envios);
+            JSONArray enviosAlbaran = new EnvioDAO().getEnviosPorAlbaran(tfAlbaranEnvio.getText());
+            if(enviosAlbaran.length()>0){
+                mostrarListaEnvios(enviosAlbaran);
             }else{
                 this.listaEnvios.getItems().clear();
                 this.listaEnvios.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));
@@ -80,5 +80,11 @@ public class EnviosController implements Initializable {
             envios.add(new EnvioDTO(id, producto, cliente, fecha_envio, cantidad, lote, albaran));
         }
         this.listaEnvios.setItems(envios);
+    }
+
+    public void enterUnidades(ActionEvent actionEvent) {
+    }
+
+    public void alta(ActionEvent actionEvent) {
     }
 }
