@@ -40,9 +40,6 @@ public class ClienteDAO {
                 }
                 sc.close();
                 jarray = new JSONArray(info.toString());
-                JSONObject jobjeto = jarray.getJSONObject(0);
-                System.out.println(jobjeto.get("id_cliente"));
-                System.out.println(info);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");
