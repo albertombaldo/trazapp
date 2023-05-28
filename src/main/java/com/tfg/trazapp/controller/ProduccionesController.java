@@ -114,7 +114,7 @@ public class ProduccionesController implements Initializable {
         if(event.getSource().equals(btnFiltrar)){
             JSONObject prod = new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(cbFiltroProducciones.getValue()).replaceAll(" ", "%20")).getJSONObject(0);
             if(prod.length()>0){
-                mostrarListaProducciones(new ProduccionDAO().getProduccionesPorProducto(prod.get("id_producto_final").toString()));
+                mostrarListaProducciones(new ProduccionDAO().getProduccionesPorProducto(prod.getLong("id_producto_final")));
             }else{
                 this.listaProducciones.getItems().clear();
                 this.listaProducciones.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));

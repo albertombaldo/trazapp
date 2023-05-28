@@ -1,9 +1,9 @@
 package com.tfg.trazapp.controller;
 
-import com.tfg.trazapp.model.dao.ClienteDAO;
-import com.tfg.trazapp.model.dao.EnvioDAO;
-import com.tfg.trazapp.model.dao.ProductoFinalDAO;
+import com.tfg.trazapp.model.dao.*;
+import com.tfg.trazapp.model.dto.ConsumeDTO;
 import com.tfg.trazapp.model.dto.EnvioDTO;
+import com.tfg.trazapp.model.dto.EnvioDTOCajas;
 import com.tfg.trazapp.model.vo.Cliente;
 import com.tfg.trazapp.model.vo.ProductoFinal;
 import javafx.collections.FXCollections;
@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,13 +61,14 @@ public class EnviosController implements Initializable {
     @FXML
     private Label labelNumAlbaran;
     @FXML
-    private TableView<?> listaProductos;
+    private TableView<EnvioDTOCajas> listaProductos;
     @FXML
     private TextField tfUnidades;
 
     private ObservableList<EnvioDTO> envios = FXCollections.observableArrayList();
     private ObservableList<String> nombresProductosFinales = obtenerNombresProductosFinales().sorted();
     private ObservableList<String> nombresClientes = obtenerNombresClientes().sorted();
+    private ObservableList<EnvioDTOCajas> cajasPedido = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -123,14 +125,25 @@ public class EnviosController implements Initializable {
 
     }
     public void anadirAPedido(ActionEvent actionEvent) {
-
+        anadirProductoAEnvio();
     }
     public void alta(ActionEvent actionEvent) {
 
     }
 
     public void anadirProductoAEnvio(){
-
+        if(cbCliente.getValue() != null && cbProducto.getValue() != null && !tfUnidades.getText().equals("")){
+            String nombreProd = cbProducto.getValue();
+            Long unidades = Long.parseLong(tfUnidades.getText());
+            if(!hayStock(nombreProd, unidades)){
+                mostrarAlertError(new ActionEvent(), "No hay stock suficiente para completar el pedido");
+            }else{
+                JSONArray producciones = new ProduccionDAO().getProduccionesPorProductoYFechaAsc(new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(nombreProd).replaceAll(" ", "%20")).getJSONObject(0).getLong("id_producto_final"));
+                anadirCajasALista(producciones, unidades);
+            }
+        }else{
+            mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
+        }
     }
 
     /**
@@ -189,4 +202,39 @@ public class EnviosController implements Initializable {
         return clis;
     }
 
+    public boolean hayStock(String nombre, Long udsNecesarias){
+        boolean hayStock = false;
+        JSONArray producciones = new ProduccionDAO().getProduccionesPorProducto(new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(nombre).replaceAll(" ", "%20")).getJSONObject(0).getLong("id_producto_final"));
+        Long stockDisponible = 0l;
+        for(int i =0; i<producciones.length(); i++){
+            stockDisponible = stockDisponible + (producciones.getJSONObject(0).getLong("stock"));
+        }
+        if((stockDisponible-udsNecesarias)>=0)
+            hayStock = true;
+        return hayStock;
+    }
+
+    public void anadirCajasALista(JSONArray stocks, Long udsNecesarias){
+        int cont = 0;
+        while(udsNecesarias>0){
+            if(stocks.getJSONObject(cont).getLong("stock") >= udsNecesarias){
+                cajasPedido.add(new EnvioDTOCajas(stocks.getJSONObject(cont).getLong("lote_produccion"), stocks.getJSONObject(cont).getJSONObject("producto_final").getString("nombre"), udsNecesarias));
+                udsNecesarias = 0l;
+            }else{
+                EnvioDTOCajas edtoc = new EnvioDTOCajas(stocks.getJSONObject(cont).getLong("lote_produccion"), stocks.getJSONObject(cont).getJSONObject("producto_final").getString("nombre"), stocks.getJSONObject(cont).getLong("stock"));
+                cajasPedido.add(edtoc);
+                udsNecesarias = udsNecesarias - edtoc.getCantidad_producto();
+                cont++;
+            }
+        }
+        listaProductos.setItems(cajasPedido);
+    }
+
+    private void mostrarAlertError(ActionEvent event, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setTitle("Error");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
 }

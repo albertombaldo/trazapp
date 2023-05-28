@@ -25,15 +25,11 @@ public class ClienteDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
-
-            //Comprobar que la peticion ha sido correcta (codigo 200)
             int responseCode = conn.getResponseCode();
             if(responseCode != 200) {
                 throw new RuntimeException("Ocurrió un error " + responseCode);
             }else {
-                //Abrir un Scanner que lea el flujo de datos de la URL e imprimirlo
                 StringBuilder info = new StringBuilder();
-                //Abrimos el flujo de datos de la URL dentro del Scanner
                 Scanner sc = new Scanner(url.openStream());
                 while(sc.hasNext()) {
                     info.append(sc.nextLine());
@@ -61,16 +57,11 @@ public class ClienteDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
-            //Comprobar que la peticion ha sido correcta (codigo 200)
             int responseCode = conn.getResponseCode();
             if(responseCode != 200) {
                 throw new RuntimeException("Ocurrió un error " + responseCode);
             }else {
-                //Abrir un Scanner que lea el flujo de datos de la URL e imprimirlo
-
                 StringBuilder info = new StringBuilder();
-
-                //Abrimos el flujo de datos de la URL dentro del Scanner
                 Scanner sc = new Scanner(url.openStream());
                 while(sc.hasNext()) {
                     info.append(sc.nextLine());
@@ -115,7 +106,6 @@ public class ClienteDAO {
             } else {
                 mostrarAlertError(new ActionEvent(), "Ya existe un cliente con el NIF introducido");
             }
-            //conn.setUseCaches(false);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
