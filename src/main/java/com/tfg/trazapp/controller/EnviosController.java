@@ -5,6 +5,8 @@ import com.tfg.trazapp.model.dto.ConsumeDTO;
 import com.tfg.trazapp.model.dto.EnvioDTO;
 import com.tfg.trazapp.model.dto.EnvioDTOCajas;
 import com.tfg.trazapp.model.vo.Cliente;
+import com.tfg.trazapp.model.vo.Envio;
+import com.tfg.trazapp.model.vo.Produccion;
 import com.tfg.trazapp.model.vo.ProductoFinal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +21,10 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ResourceBundle;
 
@@ -122,13 +127,33 @@ public class EnviosController implements Initializable {
     }
 
     public void enterUnidades(ActionEvent actionEvent) {
-
+        anadirProductoAEnvio();
     }
     public void anadirAPedido(ActionEvent actionEvent) {
         anadirProductoAEnvio();
     }
     public void alta(ActionEvent actionEvent) {
-
+        if(listaProductos.getItems() != null){
+            for(EnvioDTOCajas edtoc : listaProductos.getItems()){
+                //Se ajusta el stock
+                Produccion p = getProduccion(new ProduccionDAO().getProduccion(edtoc.getLote_producto()).getJSONObject(0));
+                p.setStock(p.getStock()-edtoc.getCantidad_producto());
+                new ProduccionDAO().anadirProduccion(p);
+                Date fechaActual = Date.valueOf(LocalDate.now());
+                //Se genera una linea para el envio
+                ProductoFinal pf = getProductoFinal(new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(edtoc.getNombre_producto()).replaceAll(" ", "%20")).getJSONObject(0));
+                Cliente c = getCliente(new ClienteDAO().getClientePorNombre(StringUtils.stripAccents(cbCliente.getValue()).replaceAll(" ", "%20")).getJSONObject(0));
+                Envio e = new Envio(0l, pf, c, fechaActual, Float.parseFloat(edtoc.getCantidad_producto().toString()), edtoc.getLote_producto().toString(), labelNumAlbaran.getText());
+                new EnvioDAO().anadirEnvio(e);
+            }
+            /*
+             * Obtener las producciones de la lista
+             * Ajustar los stocks
+             * Generar el envio dando de alta cada linea
+             */
+        }else{
+            mostrarAlertError(new ActionEvent(), "Debe añadir productos s la lista");
+        }
     }
 
     public void anadirProductoAEnvio(){
@@ -159,6 +184,22 @@ public class EnviosController implements Initializable {
         Long paquetesCaja = Long.parseLong(jsonproductos.get("paquetes_por_caja").toString());
 
         return new ProductoFinal(id, nombre, pesoUnidad, udsPaquete, paquetesCaja);
+    }
+
+    /**
+     * Castea un JSON a un objeto de tipo Produccion
+     * @param jsonproduccion
+     * @return ProductoFinal
+     */
+    public Produccion getProduccion(JSONObject jsonproduccion){
+        String lote = jsonproduccion.get("lote_produccion").toString();
+        ProductoFinal pf = getProductoFinal(jsonproduccion.getJSONObject("producto_final"));
+        Date fechaCad = Date.valueOf(jsonproduccion.get("fecha_caducidad").toString());
+        Date fechaProd = Date.valueOf(jsonproduccion.get("fecha_produccion").toString());
+        Long uds = Long.parseLong(jsonproduccion.get("unidades").toString());
+        Long stock = Long.parseLong(jsonproduccion.get("stock").toString());
+
+        return new Produccion(lote, pf, fechaProd, fechaCad, uds, stock);
     }
 
     /**
@@ -202,6 +243,12 @@ public class EnviosController implements Initializable {
         return clis;
     }
 
+    /**
+     * Comprueba si hay unidades suficuentes para completar el pedido
+     * @param nombre
+     * @param udsNecesarias
+     * @return boolean
+     */
     public boolean hayStock(String nombre, Long udsNecesarias){
         boolean hayStock = false;
         JSONArray producciones = new ProduccionDAO().getProduccionesPorProducto(new ProductoFinalDAO().getProductoFinalPorNombre(StringUtils.stripAccents(nombre).replaceAll(" ", "%20")).getJSONObject(0).getLong("id_producto_final"));
@@ -214,6 +261,12 @@ public class EnviosController implements Initializable {
         return hayStock;
     }
 
+    /**
+     * Añade a la lista del pedido las cajas de un producto
+     * @param stocks
+     * @param udsNecesarias
+     *
+     */
     public void anadirCajasALista(JSONArray stocks, Long udsNecesarias){
         int cont = 0;
         while(udsNecesarias>0){

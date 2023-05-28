@@ -1,9 +1,13 @@
 package com.tfg.trazapp.model.dao;
 
+import com.tfg.trazapp.model.vo.Envio;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -76,5 +80,40 @@ public class EnvioDAO {
             e.printStackTrace();
         }
         return jarray;
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void anadirEnvio(Envio e) {
+        try {
+            URL url = new URL("http://localhost:8080/trazapp/envio");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            String json = new JSONObject()
+                    .put("id_envio", e.getId_envio())
+                    .put("producto",  new JSONObject(e.getProducto()))
+                    .put("cliente", new JSONObject(e.getCliente()))
+                    .put("fechaEnvio", e.getFechaEnvio())
+                    .put("cantidad", e.getCantidad())
+                    .put("lote", e.getLote())
+                    .put("albaran", e.getAlbaran())
+                    .toString().replaceAll("\"id\":", "\"id_cliente\":");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
+            conn.connect();
+            try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
+                dos.writeBytes(json);
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (MalformedURLException es) {
+            es.printStackTrace();
+        } catch (IOException es) {
+            es.printStackTrace();
+        }
     }
 }
