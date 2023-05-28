@@ -75,13 +75,7 @@ public class ProduccionesController implements Initializable {
 
     //PANTALLA GESTION PRODUCCIONES
     @FXML
-    private Button btnAltaPF;
-    @FXML
-    private Button btnDel;
-    @FXML
     private Button btnFiltrarGestion;
-    @FXML
-    private Button btnMod;
     @FXML
     private TableColumn colIdPF;
     @FXML
@@ -124,6 +118,14 @@ public class ProduccionesController implements Initializable {
             }else{
                 this.listaProducciones.getItems().clear();
                 this.listaProducciones.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));
+            }
+        }if(event.getSource().equals(btnFiltrarGestion)){
+            JSONArray prod = new ProductoFinalDAO().getProductosFinalesPorNombre(tfNombreProductoFinal.getText());
+            if(prod.length()>0){
+                mostrarListaProductosFinales(prod);
+            }else{
+                this.listaProductosFinales.getItems().clear();
+                this.listaProductosFinales.setPlaceholder(new Label("No se han encontrado resultados para su búsqueda"));
             }
         }
     }
@@ -194,6 +196,30 @@ public class ProduccionesController implements Initializable {
         }
     }
 
+    public void altaPF(ActionEvent actionEvent) {
+        if(camposVaciosGestionProducciones()){
+            mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
+        }else{
+            String nombre = tfNombreProd.getText();
+            Float pesoUni = Float.parseFloat(tfPesoUni.getText());
+            Long udsPaq = Long.parseLong(tfUdsPaq.getText());
+            Long paqsCaja = Long.parseLong(tfPaqsCaja.getText());
+            new ProductoFinalDAO().anadirProductoFinal(new ProductoFinal(0l, nombre, pesoUni, udsPaq, paqsCaja));
+        }
+    }
+
+    public void eliminarPF(ActionEvent actionEvent) {
+        new ProductoFinalDAO().deleteProductoFinal(listaProductosFinales.getSelectionModel().getSelectedItem().getId_producto_final());
+    }
+
+    public boolean camposVaciosGestionProducciones(){
+        if(tfNombreProd.getText().equals("") || tfPesoUni.getText().equals("") || tfUdsPaq.getText().equals("") || tfPaqsCaja.getText().equals("")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Actualiza el stock de los suministros y da de alta una nueva produccion
      * @param actionEvent
@@ -215,7 +241,6 @@ public class ProduccionesController implements Initializable {
                     }
                 }
             }
-
             //Damos de alta la produccion
             new ProduccionDAO().anadirProduccion(p);
 
@@ -523,14 +548,5 @@ public class ProduccionesController implements Initializable {
         alert.setTitle("Error");
         alert.setContentText(mensaje);
         alert.showAndWait();
-    }
-
-    public void modificarPF(ActionEvent actionEvent) {
-    }
-
-    public void altaPF(ActionEvent actionEvent) {
-    }
-
-    public void eliminarPF(ActionEvent actionEvent) {
     }
 }
