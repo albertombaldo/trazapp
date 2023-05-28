@@ -62,6 +62,8 @@ public class PrincipalController implements Initializable {
     MenuItem stockProducciones;
     @FXML
     MenuItem nuevaProduccion;
+    @FXML
+    MenuItem gestionProducciones;
     private GridPane panelInf;
 
     public void setNode(Node node){
@@ -102,6 +104,8 @@ public class PrincipalController implements Initializable {
             createPage("stock-producciones-view.fxml", "Producción");
         } else if(evt.equals(nuevaProduccion)) {
             createPage("nueva-produccion-view.fxml", "Producción");
+        } else if(evt.equals(gestionProducciones)) {
+            createPage("gestion-producciones-view.fxml", "Producción");
         }else if(evt.equals(miCerrarSesion)) {
             mostrarAlertConfirmacionCerrarSesion(new ActionEvent(), "¿Quiere cerrar su sesión?");
         }

@@ -72,6 +72,39 @@ public class ProduccionesController implements Initializable {
     private TextField tfUnidades;
     @FXML
     private TextField tfDias;
+
+    //PANTALLA GESTION PRODUCCIONES
+    @FXML
+    private Button btnAltaPF;
+    @FXML
+    private Button btnDel;
+    @FXML
+    private Button btnFiltrarGestion;
+    @FXML
+    private Button btnMod;
+    @FXML
+    private TableColumn colIdPF;
+    @FXML
+    private TableColumn colNombreProd;
+    @FXML
+    private TableColumn colPaqsCaja;
+    @FXML
+    private TableColumn colPesoUni;
+    @FXML
+    private TableColumn colUdsPaq;
+    @FXML
+    private TableView<ProductoFinal> listaProductosFinales;
+    @FXML
+    private TextField tfNombreProd;
+    @FXML
+    private TextField tfNombreProductoFinal;
+    @FXML
+    private TextField tfPaqsCaja;
+    @FXML
+    private TextField tfPesoUni;
+    @FXML
+    private TextField tfUdsPaq;
+
     private ObservableList<String> nombresProductos = obtenerNombresProductosFinales().sorted();
     private ObservableList<String> nombresRecetas = obtenerNombresRecetas().sorted();
     private ObservableList<String> nombresFilms = obtenerNombresFilms().sorted();
@@ -79,6 +112,7 @@ public class ProduccionesController implements Initializable {
     private ObservableList<ConsumeDTO> consumosProduccion = FXCollections.observableArrayList();
     private ObservableList<Suministro> suministrosTrasProduccion = FXCollections.observableArrayList();
     private ObservableList<ProduccionDTO> producciones = FXCollections.observableArrayList();
+    private ObservableList<ProductoFinal> productosFinales = FXCollections.observableArrayList();
 
 
     @FXML
@@ -140,6 +174,13 @@ public class ProduccionesController implements Initializable {
             this.cbCaja.setItems(nombresCajas);
             this.cbFilm.setItems(nombresFilms);
             labelFechaProd.setText(LocalDate.now().toString());
+        }else if (listaProductosFinales != null){
+            this.colIdPF.setCellValueFactory(new PropertyValueFactory("id_producto_final"));
+            this.colNombreProd.setCellValueFactory(new PropertyValueFactory("nombre"));
+            this.colPesoUni.setCellValueFactory(new PropertyValueFactory("peso_por_unidad"));
+            this.colUdsPaq.setCellValueFactory(new PropertyValueFactory("unidades_por_paquete"));
+            this.colPaqsCaja.setCellValueFactory(new PropertyValueFactory("paquetes_por_caja"));
+            mostrarListaProductosFinales(new ProductoFinalDAO().getAllProductos());
         }
     }
 
@@ -277,6 +318,19 @@ public class ProduccionesController implements Initializable {
         }
         if(hayMateriasSuficientes)
             this.listaProductos.setItems(consumosProduccion);
+    }
+
+    public void mostrarListaProductosFinales(JSONArray jsonprod){
+        this.listaProductosFinales.getItems().clear();
+        for(int i = 0; i<jsonprod.length(); i++){
+            Long id = Long.parseLong(jsonprod.getJSONObject(i).get("id_producto_final").toString());
+            String nombre = jsonprod.getJSONObject(i).get("nombre").toString();
+            Float pesoud = Float.parseFloat(jsonprod.getJSONObject(i).get("peso_por_unidad").toString());
+            Long uds = Long.parseLong(jsonprod.getJSONObject(i).get("unidades_por_paquete").toString());
+            Long paqs = Long.parseLong(jsonprod.getJSONObject(i).get("paquetes_por_caja").toString());
+            productosFinales.add(new ProductoFinal(id, nombre, pesoud, uds, paqs));
+        }
+        this.listaProductosFinales.setItems(productosFinales);
     }
 
     public void mostrarListaProducciones(JSONArray jsonprod){
@@ -465,4 +519,12 @@ public class ProduccionesController implements Initializable {
         alert.showAndWait();
     }
 
+    public void modificarPF(ActionEvent actionEvent) {
+    }
+
+    public void altaPF(ActionEvent actionEvent) {
+    }
+
+    public void eliminarPF(ActionEvent actionEvent) {
+    }
 }
