@@ -50,7 +50,12 @@
           <Menu fx:id="clientes" mnemonicParsing="false" text="Clientes">
             <items>
               <MenuItem fx:id="listadoClientes" mnemonicParsing="false" onAction="#clcickOpcion" text="Buscar clientes" />
-                  <MenuItem mnemonicParsing="false" onAction="#clcickOpcion" text="Pedidos de clientes" />
+                  <Menu fx:id="pedidos" mnemonicParsing="false" text="Pedidos">
+                    <items>
+                      <MenuItem fx:id="generarEnvio" mnemonicParsing="false" onAction="#clcickOpcion" text="Generar orden de envío" />
+                        <MenuItem fx:id="consultarPedidos" mnemonicParsing="false" onAction="#clcickOpcion" text="Consultar pedidos" />
+                    </items>
+                  </Menu>
                   <MenuItem fx:id="gestionClientes" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión de clientes" />
             </items>
           </Menu>

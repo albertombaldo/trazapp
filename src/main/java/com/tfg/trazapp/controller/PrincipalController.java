@@ -55,6 +55,8 @@ public class PrincipalController implements Initializable {
     @FXML
     MenuItem listadoClientes;
     @FXML
+    MenuItem consultarPedidos;
+    @FXML
     MenuItem listadoRecetas;
     @FXML
     MenuItem gestionUsuarios;
@@ -96,6 +98,8 @@ public class PrincipalController implements Initializable {
             createPage("gestion-clientes-view.fxml", "Clientes");
         }else if(evt.equals(listadoClientes)){
             createPage("lista-clientes-view.fxml", "Clientes");
+        }else if(evt.equals(consultarPedidos)){
+            createPage("lista-envios-view.fxml", "Envios");
         }else if(evt.equals(listadoRecetas)){
             createPage("lista-recetas-view.fxml", "Recetas");
         }else if(evt.equals(gestionRecetas)){
