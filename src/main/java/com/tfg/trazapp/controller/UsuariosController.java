@@ -5,13 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 
 import java.net.URL;
 import java.sql.*;
@@ -19,6 +16,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class UsuariosController implements Initializable {
+    PrincipalController pc;
     @FXML
     private Button btnAlta;
     @FXML
@@ -49,7 +47,7 @@ public class UsuariosController implements Initializable {
     private TextField tfNombreUsuario;
 
     //PERFIL DE USUARIO
-    Usuario user;
+    Usuario user = pc.user;
     @FXML
     private Button btnCambioPass;
     @FXML
@@ -75,7 +73,8 @@ public class UsuariosController implements Initializable {
             this.cbRolFiltro.setItems(rolesUsuarioFiltrar);
             mostrarUsuarios(obtenerUsuarios());
         }else if(pfPassAnt != null){
-
+            labelUsuarioPerfil.setText(user.getNombre());
+            labelRolPerfil.setText(user.getRol());
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +239,14 @@ public class UsuariosController implements Initializable {
         alert.setTitle("Error");
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    public PrincipalController getPc() {
+        return pc;
+    }
+    public void setPc(PrincipalController pc) {
+        this.pc = pc;
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 public class PrincipalController implements Initializable {
 
     ScenesController sc;
-    Usuario user;
+    public static Usuario user;
     @FXML
     private GridPane gridPrincipal;
     @FXML
@@ -122,7 +122,6 @@ public class PrincipalController implements Initializable {
             mostrarAlertConfirmacionCerrarSesion(new ActionEvent(), "¿Quiere cerrar su sesión?");
         }
     }
-
 
     public void createPage(String fxml, String encabezado) {
         try {
