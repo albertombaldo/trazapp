@@ -1,11 +1,11 @@
 package com.tfg.trazapp.controller;
 
-import com.tfg.trazapp.model.vo.Producto;
 import com.tfg.trazapp.model.vo.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -38,14 +38,6 @@ public class UsuariosController implements Initializable {
     @FXML
     private TableColumn colNombreUsuario;
     @FXML
-    private GridPane gpCampos;
-    @FXML
-    private GridPane gpLista;
-    @FXML
-    private HBox hbBotones;
-    @FXML
-    private HBox hboxFiltro;
-    @FXML
     private TableView<Usuario> listaUsuarios;
     @FXML
     private TextField pfPass;
@@ -56,9 +48,21 @@ public class UsuariosController implements Initializable {
     @FXML
     private TextField tfNombreUsuario;
 
+    //PERFIL DE USUARIO
+    Usuario user;
+    @FXML
+    private Button btnCambioPass;
+    @FXML
+    private Label labelRolPerfil;
+    @FXML
+    private Label labelUsuarioPerfil;
+    @FXML
+    private PasswordField pfPassAnt;
+    @FXML
+    private PasswordField pfPassNuevo;
+
     private ObservableList<String> rolesUsuario = FXCollections.observableArrayList("ADMIN", "IDT", "QAT", "OPERARIO", "OFICINAS");
     private ObservableList<String> rolesUsuarioFiltrar = FXCollections.observableArrayList("ADMIN", "IDT", "QAT", "OPERARIO", "OFICINAS", "TODOS");
-
     private ObservableList<Usuario> usuarios = FXCollections.observableArrayList();
 
     @Override
@@ -70,6 +74,8 @@ public class UsuariosController implements Initializable {
             this.cbRol.setItems(rolesUsuario);
             this.cbRolFiltro.setItems(rolesUsuarioFiltrar);
             mostrarUsuarios(obtenerUsuarios());
+        }else if(pfPassAnt != null){
+
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////
