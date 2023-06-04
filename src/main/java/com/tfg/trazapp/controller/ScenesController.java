@@ -9,14 +9,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ScenesController {
-
     private Stage principal;
     public Usuario user;
     public ScenesController(Stage stage) throws IOException {
         this.principal = stage;
         cargarLogin();
     }
-
     public void cargarLogin() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("/com/tfg/trazapp/login-view.fxml"));
@@ -29,7 +27,6 @@ public class ScenesController {
         LoginController lc = fxmlLoader.getController();
         lc.setSc(this);
     }
-
     public void cargarPrincipal() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("/com/tfg/trazapp/principal-view.fxml"));

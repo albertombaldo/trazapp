@@ -139,6 +139,8 @@ public class UsuariosController implements Initializable {
             }else{
                 mostrarAlertError(new ActionEvent(), "Debe rellenar todos los campos");
             }
+        }else if(evt.equals(btnCambioPass)){
+            cambiarPass();
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////
@@ -227,6 +229,40 @@ public class UsuariosController implements Initializable {
             }else {
                 conn.prepareStatement("insert into usuarios (id_usuario, nombre, pass, rol) values (0, '"+this.tfNombreUsuario.getText()+"',MD5('"+this.pfPass.getText()+"'), '"+this.cbRol.getValue().toString()+"' )").executeUpdate();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    public boolean comprobarPass(Connection c, String user, String pass) {
+        boolean passIgual = false;
+        ResultSet rs;
+        try {
+            rs = c.prepareStatement("select * from usuarios where nombre = '"+user+"' and pass = MD5('" +pass+ "');").executeQuery();
+            if(rs.next())
+                passIgual = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return passIgual;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    public void cambiarPass() {
+        Connection conn;
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/trazapp", "root", "");
+            System.out.println("Se ha conectado correctamente a la base de datos");
+            if(conn == null){
+                System.out.println("No se ha podido conectar a la base de datos");
+            }else {
+                if(comprobarPass(conn, labelUsuarioPerfil.getText(), pfPassAnt.getText())){
+
+                }
+                conn.prepareStatement("update usuarios set pass=MD5('"+this.pfPassNuevo.getText()+"') where nombre = '"+this.labelUsuarioPerfil.getText()+"';").executeUpdate();
+            }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
