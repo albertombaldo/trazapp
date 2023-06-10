@@ -100,7 +100,6 @@ public class RecetaDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
-
             //Comprobar que la peticion ha sido correcta (codigo 200)
             int responseCode = conn.getResponseCode();
             if(responseCode != 200) {
@@ -225,7 +224,6 @@ public class RecetaDAO {
                 sc.close();
                 //String consulta = "[" + info.toString() +"]";
                 jarray = new JSONArray(info.toString());
-                JSONObject jobjeto = jarray.getJSONObject(0);
             }
         } catch (MalformedURLException e) {
             System.err.println("URL incorrecta");
@@ -246,20 +244,26 @@ public class RecetaDAO {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             u.setId_uso(0l);
-            String json = new JSONObject(u).toString();
+            String json = new JSONObject()
+                    .put("id_uso", u.getId_uso())
+                    .put("cantidad_mp",  u.getCantidad_mp())
+                    .put("id_producto", new JSONObject(u.getProducto()))
+                    .put("id_receta", new JSONObject(u.getReceta()))
+                    .toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-                dos.writeBytes(json);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
+                writer.write(json);
+                writer.close();
             }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))){
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(line);
                 }
             }
-            //conn.setUseCaches(false);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

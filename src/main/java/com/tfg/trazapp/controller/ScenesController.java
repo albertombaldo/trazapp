@@ -37,6 +37,9 @@ public class ScenesController {
         PrincipalController pc = fxmlLoader.getController();
         pc.setSc(this);
         pc.user=user;
+
+        pc.gestionProducciones.setVisible(false);
+
         //Ocultamos las pestañas de los desplegables basándonos en el rol del usuario
         if(!user.getRol().equals("ADMIN")) { //No es admin
             pc.usuarios.setVisible(false);
