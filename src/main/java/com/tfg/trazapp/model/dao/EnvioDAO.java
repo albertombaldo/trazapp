@@ -4,10 +4,7 @@ import com.tfg.trazapp.model.vo.Envio;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -102,9 +99,11 @@ public class EnvioDAO {
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-                dos.writeBytes(json);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
+                writer.write(json);
+                writer.close();
             }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))){
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(line);

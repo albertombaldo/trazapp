@@ -3,10 +3,7 @@ package com.tfg.trazapp.model.dao;
 import com.tfg.trazapp.model.vo.Proveedor;
 import javafx.collections.ObservableArray;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -15,6 +12,7 @@ import java.util.Scanner;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -108,14 +106,22 @@ public class ProveedorDAO {
             conn.setDoOutput(true);
             if(!comprobarProveedorExiste(p)){
                 p.setId(0l);
-                String json = new JSONObject(p).toString();
+                String json = new JSONObject()
+                        .put("id_proveedor", p.getId())
+                        .put("direccion",  p.getDireccion())
+                        .put("nif",  p.getNif())
+                        .put("nombre", p.getNombre())
+                        .put("telefono", p.getTelefono())
+                        .toString();
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
                 try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-                    dos.writeBytes(json);
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
+                    writer.write(json);
+                    writer.close();
                 }
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))){
                     String line;
                     while ((line = br.readLine()) != null) {
                         System.out.println(line);
@@ -139,15 +145,22 @@ public class ProveedorDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
             conn.setDoOutput(true);
-            String json = "{\"id_proveedor\":"+ p.getId() +",\"nombre\":\""+ p.getNombre() +"\",\"nif\":\""+ p.getNif() +"\",\"telefono\":\""+ p.getTelefono() +"\",\"direccion\":\""+ p.getDireccion() +"\"}";
-            //String json = new JSONObject(p).toString();
+            String json = new JSONObject()
+                    .put("id_proveedor", p.getId())
+                    .put("direccion",  p.getDireccion())
+                    .put("nif",  p.getNif())
+                    .put("nombre", p.getNombre())
+                    .put("telefono", p.getTelefono())
+                    .toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-                dos.writeBytes(json);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
+                writer.write(json);
+                writer.close();
             }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))){
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(line);
