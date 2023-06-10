@@ -169,7 +169,6 @@ public class ProductosController implements Initializable {
         }else if (evt.equals(btnGuardarEnt)){
             altaProductos(getProductosLista());
         }else if(evt.equals(btnFiltrar)){
-            System.out.println(cbTipoProdFiltrar.getValue() + " " + tfNombreProd.getText());
             if((cbTipoProdFiltrar.getValue() == null || cbTipoProdFiltrar.getValue().equals("Todos")) && tfNombreProd.getText().equals("")){
                 mostrarListaProductos(new ProductoDAO().getAllProductos());
             }else if((cbTipoProdFiltrar.getValue() == null || cbTipoProdFiltrar.getValue().equals("Todos")) && !tfNombreProd.getText().equals("")){
@@ -285,7 +284,10 @@ public class ProductosController implements Initializable {
                 for(int i = 0; i < listaEntradaProductos.getItems().size(); i++){
                     ProductoDTOComboBox pdc = listaEntradaProductos.getItems().get(i);
                     Date fEnt = Date.valueOf(dpFechaEnt.getValue());
-                    Date fCad = Date.valueOf(pdc.getFecha_caducidad().getValue());
+                    Date fCad = null;
+                    if(pdc.getFecha_caducidad().getValue() != null){
+                        fCad = Date.valueOf(pdc.getFecha_caducidad().getValue());
+                    }
                     //Se reemplezan los espacios por "%20" y se quitan las tildes para no tener problemas con la consulta a la API
                     Proveedor prov = getProveedor(new ProveedorDAO().getProveedoresPorNombre((StringUtils.stripAccents(cbProveedorEnt.getValue().toString().replaceAll(" ", "%20")))));
                     Producto prod = getProducto(new ProductoDAO().getProductosPorNombre(StringUtils.stripAccents(pdc.getProducto().getValue().toString().replaceAll(" ", "%20"))).getJSONObject(0));
@@ -397,7 +399,6 @@ public class ProductosController implements Initializable {
      */
     public boolean comprobarCamposVacios(){
         boolean vacios = false;
-        System.out.println(cbProveedorEnt.getValue());
         //Primero comprobamos los campos superiores
         if(Date.valueOf(dpFechaEnt.getValue()) == null || tfAlbaranEnt.getText().equals("") || cbProveedorEnt.getValue() == null || cbProveedorEnt.getValue().toString().equals("Proveedor")){
             vacios = true;
