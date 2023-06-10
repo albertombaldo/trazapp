@@ -181,9 +181,6 @@ public class ProductoDAO {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-            conn.connect();
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
                 writer.write(json);
@@ -212,9 +209,6 @@ public class ProductoDAO {
             if(!comprobarPrductoExiste(p)){
                 p.setId_producto(0l);
                 String json = new JSONObject(p).toString();
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-                conn.connect();
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
@@ -271,9 +265,6 @@ public class ProductoDAO {
         }
         return existe;
     }
-
-
-
 
     private void mostrarAlertError(ActionEvent event, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

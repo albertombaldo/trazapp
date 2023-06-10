@@ -470,7 +470,7 @@ public class ProductosController implements Initializable {
         p = this.listaProductos.getSelectionModel().getSelectedItem();
         if(p != null){
             tfNombre.setText(p.getNombre());
-            cbTipoProd.setPromptText(p.getTipo());
+            cbTipoProd.setValue(p.getTipo());
         }
     }
 

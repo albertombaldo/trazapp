@@ -91,9 +91,6 @@ public class ClienteDAO {
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-                conn.connect();
                 try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
                     writer.write(json);
@@ -123,9 +120,6 @@ public class ClienteDAO {
             conn.setRequestMethod("PUT");
             conn.setDoOutput(true);
             String json = "{\"id_cliente\":"+ c.getId() +",\"nombre\":\""+ c.getNombre() +"\",\"nif\":\""+ c.getNif() +"\",\"telefono\":\""+ c.getTelefono() +"\",\"direccion\":\""+ c.getDireccion() +"\"}";
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-            conn.connect();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();

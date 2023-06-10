@@ -142,9 +142,6 @@ public class RecetaDAO {
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
                 conn.connect();
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-                conn.connect();
                 try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
                     writer.write(json);

@@ -136,12 +136,8 @@ public class SuministroDAO {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-                s.setId_suministro(0l);
-                //No admite acentos, por eso se usa el StringUtils.stripAccents
-                String json = StringUtils.stripAccents(new JSONObject(s).toString().replaceAll("\"id\":", "\"id_proveedor\":"));
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-                conn.connect();
+            s.setId_suministro(0l);
+            String json = new JSONObject(s).toString().replaceAll("\"id\":", "\"id_proveedor\":");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
@@ -181,9 +177,6 @@ public class SuministroDAO {
                     .put("producto", new JSONObject(s.getProducto()))
                     .put("albaran", s.getAlbaran())
                     .toString().replaceAll("\"id\":", "\"id_proveedor\":"));
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
-            conn.connect();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));
             conn.connect();
