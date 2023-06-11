@@ -247,8 +247,8 @@ public class RecetaDAO {
             String json = new JSONObject()
                     .put("id_uso", u.getId_uso())
                     .put("cantidad_mp",  u.getCantidad_mp())
-                    .put("id_producto", new JSONObject(u.getProducto()))
-                    .put("id_receta", new JSONObject(u.getReceta()))
+                    .put("producto", new JSONObject(u.getProducto()))
+                    .put("receta", new JSONObject(u.getReceta()))
                     .toString();
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(json.length()));

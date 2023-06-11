@@ -49,6 +49,8 @@ public class PrincipalController implements Initializable {
     @FXML
     MenuItem gestionProductos;
     @FXML
+    MenuItem trazabilidad;
+    @FXML
     MenuItem gestionClientes;
     @FXML
     MenuItem gestionRecetas;
@@ -96,6 +98,8 @@ public class PrincipalController implements Initializable {
             createPage("entrada-productos-view.fxml", "Productos");
         }else if(evt.equals(gestionProductos)){
             createPage("gestion-productos-view.fxml", "Productos");
+        }else if(evt.equals(trazabilidad)){
+            createPage("trazabilidad-view.fxml", "Productos");
         }else if(evt.equals(gestionUsuarios)){
             createPage("gestion-usuarios-view.fxml", "Usuarios");
         }else if(evt.equals(gestionClientes)){

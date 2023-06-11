@@ -39,6 +39,7 @@
                 <MenuItem fx:id="stockProducciones" mnemonicParsing="false" onAction="#clcickOpcion" text="Stock producciones" />
                   <MenuItem fx:id="nuevaProduccion" mnemonicParsing="false" onAction="#clcickOpcion" text="Nueva producción" />
                   <MenuItem fx:id="gestionProducciones" mnemonicParsing="false" onAction="#clcickOpcion" text="Gestión producciones" />
+                  <MenuItem fx:id="trazabilidad" mnemonicParsing="false" onAction="#clcickOpcion" text="Trazabilidad" />
                   <Menu fx:id="recetas" mnemonicParsing="false" text="Recetas">
                      <items>
                         <MenuItem fx:id="listadoRecetas" mnemonicParsing="false" onAction="#clcickOpcion" text="Buscar recetas" />
