@@ -187,7 +187,7 @@ public class RecetasController implements Initializable{
     void guardarReceta(ActionEvent event) {
         Receta receta = new Receta(0l, tfNombreReceta.getText());
         new RecetaDAO().anadirReceta(receta);
-        JSONObject recetaconId = (JSONObject) new RecetaDAO().getRecetaPorNombre(tfNombreReceta.getText()).get(0);
+        JSONObject recetaconId = (JSONObject) new RecetaDAO().getRecetaPorNombre(StringUtils.stripAccents(tfNombreReceta.getText().replaceAll(" ", "%20"))).get(0);
         receta.setId_receta(Long.parseLong(recetaconId.get("id_receta").toString()));
         for(int i = 0; i < listaEntradaProductos.getItems().size(); i++){
             UtilizaDTOComboBox udtocb = listaEntradaProductos.getItems().get(i);
